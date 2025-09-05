@@ -1,19 +1,19 @@
-# Lance James - Interactive Terminal Resume
+# Interactive Terminal UI Demo
 
-> A cybersecurity expert's resume with a fully functional terminal interface featuring 50+ commands, tab completion, and easter eggs.
+> A web-based terminal interface implementation with command parsing, tab completion, and interactive navigation.
 
 ## 🚀 Live Demo
 
-Visit the live resume: [**lancejames.dev**](https://lancejames.dev)
+[View Demo](https://your-username.github.io/interactive-terminal-ui)
 
 ## ✨ Features
 
-### 🖥️ **Interactive Terminal Interface**
-- **50+ Commands** - Complete Linux-like command system
-- **Tab Completion** - Smart auto-completion with suggestions  
-- **Command History** - Arrow keys to navigate previous commands
-- **Section Navigation** - Jump between resume sections with commands
-- **Easter Eggs** - Fun hacker-themed commands and responses
+### 🖥️ **Terminal Interface Features**
+- **Command System** - Linux-like command parsing and execution
+- **Tab Completion** - Auto-completion with intelligent suggestions  
+- **Command History** - Navigation through previous commands
+- **Content Navigation** - Dynamic section routing via commands
+- **Interactive Elements** - Engaging user interactions and responses
 
 ### 🎯 **Core Commands**
 ```bash
