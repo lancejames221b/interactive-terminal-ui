@@ -1,0 +1,3175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lance James - Chief Innovations Officer & Cybersecurity Expert | Unit 221B</title>
+    <meta name="description" content="Lance James, Chief Innovations Officer at Unit 221B. 20+ years in cybersecurity, AI, and threat intelligence. Led $5M Series Seed (2025). Creator of Agent Hivemind & SpinScore.">
+    <meta property="og:title" content="Lance James - Chief Innovations Officer & Cybersecurity Expert">
+    <meta property="og:description" content="Leading cybersecurity innovator with 20+ years experience. CIO at Unit 221B, creator of Agent Hivemind AI platform.">
+    <meta property="og:image" content="https://i.ibb.co/Pz5s2hMP/image.png">
+    <meta property="og:url" content="https://lancejames.dev">
+    <meta property="og:type" content="profile">
+    <link rel="canonical" href="https://lancejames.dev">
+    <link rel="icon" href="https://i.ibb.co/Pz5s2hMP/image.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --bg-primary: #0b0f10;
+            --bg-secondary: #111a1c;
+            --green-primary: #00ff9c;
+            --green-secondary: #00cc7a;
+            --green-dim: #004d2e;
+            --text-muted: #66ffb3;
+            --text-dim: #4d9970;
+            --text-secondary: #7affcc;
+            --border: #1a4d3a;
+            --glow: 0 0 20px rgba(0, 255, 156, 0.3);
+            --glow-strong: 0 0 30px rgba(0, 255, 156, 0.6);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Fira Mono', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-muted);
+            overflow-x: hidden;
+            line-height: 1.6;
+            font-size: 14px;
+            position: relative;
+            scroll-behavior: smooth;
+            margin: 0;
+            padding: 2rem;
+        }
+        
+        body.terminal-mode {
+            /* Active when terminal shortcuts should work */
+            cursor: default;
+        }
+        
+        /* CRT Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 156, 0.03) 2px,
+                rgba(0, 255, 156, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        /* Container */
+        .terminal-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40vh;
+            max-height: 500px;
+            background: rgba(11, 15, 16, 0.95);
+            border-top: 2px solid var(--green-secondary);
+            z-index: 2000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+        
+        .terminal-container.active {
+            transform: translateY(0);
+        }
+        
+        .terminal-header {
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+        
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .control.red { background: #ff5f57; }
+        .control.yellow { background: #ffbd2e; }
+        .control.green { background: #28ca42; }
+        
+        .terminal-title {
+            color: var(--text-muted);
+            flex: 1;
+        }
+        
+        .terminal-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .terminal-body {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Fix for flexbox overflow */
+            overflow-y: hidden;
+        }
+        
+        .terminal-output {
+            flex: 1;
+            word-wrap: break-word;
+            overflow-y: auto;
+        }
+        
+        .terminal-line {
+            line-height: 1.5;
+        }
+        
+        .prompt, .terminal-prompt {
+            color: var(--green-secondary);
+            margin-right: 0.5rem;
+        }
+        
+        .terminal-input-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            caret-color: var(--green-primary);
+        }
+        
+        .btn-terminal {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--green-secondary);
+            color: var(--green-primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--glow);
+        }
+        
+        .btn-terminal:hover {
+            box-shadow: var(--glow-strong);
+            transform: translateY(-2px);
+        }
+        
+        body.terminal-open {
+            padding-bottom: 40vh; /* Match terminal height */
+        }
+        
+        /* Mobile menu button */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--green-secondary);
+            color: var(--green-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1002;
+            min-height: 44px;
+            min-width: 100px;
+            transition: all 0.2s ease;
+            box-shadow: var(--glow);
+        }
+        
+        .mobile-menu-btn:hover,
+        .mobile-menu-btn:focus {
+            background: var(--green-dim);
+            box-shadow: var(--glow-strong);
+            outline: none;
+        }
+        
+        /* Sidebar Terminal */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-right: 2px solid var(--border);
+            padding: 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar.mobile-hidden {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar .terminal-header {
+            color: var(--green-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            text-shadow: var(--glow);
+            font-size: 1rem;
+        }
+        
+        .nav-commands {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        
+        .nav-commands li {
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .nav-commands li:hover,
+        .nav-commands li:focus {
+            background: var(--green-dim);
+            border-color: var(--green-secondary);
+            box-shadow: var(--glow);
+            text-shadow: 
+                0 0 8px var(--green-primary),
+                0 0 15px var(--green-primary);
+            outline: none;
+        }
+        
+        .nav-commands li.active {
+            background: var(--green-dim);
+            border-color: var(--green-primary);
+            box-shadow: var(--glow-strong);
+        }
+        
+        .nav-commands .command {
+            color: var(--green-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-commands .command::before {
+            content: '$ ';
+        }
+        
+        .nav-commands .description {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+        }
+        
+        .quick-callouts {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .callout-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .callout-item:hover {
+            background: var(--green-dim);
+            text-shadow: 
+                0 0 8px var(--green-primary),
+                0 0 15px var(--green-primary);
+            transform: scale(1.02);
+        }
+        
+        .callout-key {
+            background: var(--green-dim);
+            color: var(--green-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+        
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 320px;
+            flex: 1;
+            min-height: 100vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 156, 0.1) 0%, var(--bg-primary) 70%);
+            padding: 3rem 2rem;
+        }
+        
+        .profile-container {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-ring {
+            width: 220px;
+            height: 220px;
+            border: 4px solid var(--green-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: profilePulse 3s ease-in-out infinite;
+            box-shadow: var(--glow-strong);
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-secondary);
+        }
+        
+        .profile-ring::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(0, 255, 156, 0.1) 3px,
+                rgba(0, 255, 156, 0.1) 6px
+            );
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            background: var(--bg-primary);
+            z-index: 1;
+            position: relative;
+        }
+        
+        .hero-name {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: var(--glow-strong);
+            opacity: 0;
+            letter-spacing: 0.1rem;
+        }
+        
+        .hero-title {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            opacity: 0;
+            max-width: 700px;
+            line-height: 1.7;
+            font-style: italic;
+        }
+        
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            max-width: 800px;
+        }
+        
+        .badge {
+            background: var(--bg-secondary);
+            border: 2px solid var(--green-secondary);
+            color: var(--green-primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-shadow: var(--glow);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .badge:hover,
+        .badge:focus {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-strong);
+            text-shadow: 
+                0 0 10px var(--green-primary),
+                0 0 20px var(--green-primary);
+            outline: none;
+        }
+        
+        .badge.highlight {
+            background: var(--green-dim);
+            box-shadow: var(--glow);
+            border-color: var(--green-primary);
+        }
+        
+        .hero-contact {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            max-width: 600px;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-height: 50px;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .contact-item:hover,
+        .contact-item:focus {
+            border-color: var(--green-secondary);
+            box-shadow: var(--glow);
+            text-shadow: 
+                0 0 8px var(--green-primary),
+                0 0 15px var(--green-primary);
+            outline: none;
+            transform: translateY(-1px);
+        }
+        
+        .copy-btn {
+            background: var(--green-dim);
+            border: 1px solid var(--green-secondary);
+            color: var(--green-primary);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .copy-btn:hover,
+        .copy-btn:focus {
+            background: var(--green-secondary);
+            color: var(--bg-primary);
+            outline: none;
+        }
+        
+        /* Sections */
+        .section {
+            padding: 4rem 3rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--border);
+            page-break-before: always;
+            position: relative;
+        }
+        
+        .section-header {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--green-primary);
+            text-shadow: var(--glow);
+            opacity: 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .section-header::before {
+            content: '$ ';
+            color: var(--green-secondary);
+            margin-right: 0.5rem;
+        }
+        
+        .terminal-output {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal-output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(90deg, var(--green-dim) 0%, var(--border) 100%);
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .terminal-output > *:first-child {
+            margin-top: 30px;
+        }
+        
+        .experience-item {
+            margin-bottom: 3rem;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .job-title {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            font-weight: 700;
+            color: var(--green-primary);
+            text-shadow: var(--glow);
+            margin-bottom: 0.5rem;
+        }
+        
+        .company {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .job-date {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .job-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+        
+        .achievements {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .achievements li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 0.9rem;
+        }
+        
+        .achievements li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--green-secondary);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .skill-item {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .skill-item:hover {
+            border-color: var(--green-secondary);
+            box-shadow: var(--glow);
+            text-shadow: 
+                0 0 8px var(--green-primary),
+                0 0 15px var(--green-primary);
+            transform: translateY(-3px);
+        }
+        
+        .affiliations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 1rem;
+        }
+        
+        .affiliation-item {
+            color: var(--text-secondary);
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .affiliation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .affiliation-item strong {
+            color: var(--green-primary);
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-secondary);
+            border: 2px solid var(--green-secondary);
+            color: var(--green-primary);
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .back-to-top:hover {
+            background: var(--green-dim);
+            box-shadow: var(--glow-strong);
+            text-shadow: 
+                0 0 10px var(--green-primary),
+                0 0 20px var(--green-primary);
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--green-primary);
+            color: var(--bg-primary);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1003;
+            max-width: 300px;
+            word-wrap: break-word;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .toast.error {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        
+        /* Animations */
+        @keyframes profilePulse {
+            0%, 100% { 
+                box-shadow: var(--glow-strong);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(0, 255, 156, 0.8);
+                transform: scale(1.02);
+            }
+        }
+        
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid var(--green-primary);
+            animation: typewriter 2s steps(30) forwards;
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 280px;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+            }
+            
+            .section {
+                padding: 3rem 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .sidebar {
+                width: 300px;
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .hero {
+                padding: 5rem 1.5rem 3rem;
+                min-height: 90vh;
+            }
+            
+            .hero-contact {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .contact-item {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .job-header {
+                flex-direction: column;
+            }
+            
+            .section {
+                padding: 2.5rem 1.5rem;
+            }
+            
+            .profile-ring {
+                width: 180px;
+                height: 180px;
+            }
+            
+            .profile-image {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .hero-badges {
+                flex-direction: column;
+                align-items: center;
+                max-width: 300px;
+            }
+            
+            .badge {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section {
+                padding: 2rem 1rem;
+            }
+            
+            .terminal-output {
+                padding: 1.5rem;
+            }
+            
+            .hero {
+                padding: 4rem 1rem 2rem;
+            }
+        }
+        
+        @media (max-width: 320px) {
+            .profile-ring {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .profile-image {
+                width: 130px;
+                height: 130px;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 11px;
+            }
+            
+            body::before,
+            .mobile-menu-btn,
+            .sidebar,
+            .back-to-top,
+            .toast,
+            .help-overlay {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+                height: auto !important;
+            }
+            
+            .hero {
+                height: auto !important;
+                padding: 1rem 0 !important;
+                background: white !important;
+                page-break-after: always;
+            }
+            
+            .section {
+                padding: 1.5rem 0 !important;
+                border-bottom: 1px solid #ddd !important;
+                page-break-before: always;
+                background: white !important;
+            }
+            
+            .terminal-output {
+                background: #f8f9fa !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+            }
+            
+            .terminal-output::before {
+                display: none !important;
+            }
+            
+            .profile-ring {
+                border-color: #333 !important;
+                box-shadow: none !important;
+                animation: none !important;
+            }
+            
+            .badge {
+                background: #f0f0f0 !important;
+                border: 1px solid #ccc !important;
+                color: black !important;
+            }
+            
+            .section-header,
+            .job-title,
+            .hero-name {
+                color: black !important;
+                text-shadow: none !important;
+            }
+            
+            .hero-title,
+            .hero-subtitle,
+            .job-description,
+            .achievements li,
+            .affiliation-item,
+            .skill-item {
+                color: #333 !important;
+            }
+            
+            .company,
+            .job-date {
+                color: #666 !important;
+            }
+            
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+        
+        /* Accessibility - Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .profile-ring {
+                animation: none !important;
+            }
+            
+            .typewriter {
+                animation: none !important;
+                border-right: none !important;
+            }
+            
+            body.no-auto-scroll .main-content {
+                scroll-behavior: auto;
+            }
+        }
+        
+        /* Focus styles for accessibility */
+        .nav-commands li:focus,
+        .contact-item:focus,
+        .copy-btn:focus,
+        .mobile-menu-btn:focus,
+        .back-to-top:focus,
+        .badge:focus {
+            outline: 3px solid var(--green-primary);
+            outline-offset: 2px;
+        }
+        
+        /* High contrast for accessibility */
+        @media (prefers-contrast: high) {
+            :root {
+                --text-secondary: #ffffff;
+                --text-muted: #ffffff;
+                --text-dim: #cccccc;
+            }
+        }
+        
+        /* Screen reader only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ==========================================================================
+           Interactive Terminal v3.0 (Modal Window)
+           ========================================================================== */
+
+        .terminal-window {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            max-height: 600px;
+            background: rgba(11, 15, 16, 0.9);
+            border: 2px solid var(--green-secondary);
+            border-radius: 10px;
+            box-shadow: var(--glow-strong);
+            z-index: 3000;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            backdrop-filter: blur(8px);
+            transform: translate(-50%, -50%) scale(0.9);
+            opacity: 0;
+            transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+        }
+
+        .terminal-window.active {
+            display: flex;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .terminal-header {
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            cursor: move;
+            user-select: none;
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .control.red { background: #ff5f57; }
+        .control.yellow { background: #ffbd2e; }
+        .control.green { background: #28ca42; }
+
+        .terminal-title {
+            color: var(--text-muted);
+            flex: 1;
+        }
+
+        .terminal-close {
+            background: none;
+            border: none;
+            color: var(--text-dim);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .terminal-body {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent parent from scrolling */
+        }
+
+        .terminal-output {
+            flex: 1;
+            overflow-y: auto; /* Enable scrolling here */
+            word-wrap: break-word;
+            padding-right: 10px; /* Space for scrollbar */
+            color: var(--green-primary);
+            font-family: 'Fira Mono', monospace;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            color: var(--green-primary);
+            line-height: 1.4;
+        }
+
+        /* Custom Scrollbar */
+        .terminal-output::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background-color: var(--green-secondary);
+            border-radius: 5px;
+            border: 2px solid var(--bg-secondary);
+        }
+
+        .terminal-input-wrapper {
+            display: flex;
+            align-items: center;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border);
+            margin-top: 0.5rem;
+        }
+
+        .terminal-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .btn-terminal-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--green-secondary);
+            color: var(--green-primary);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--glow);
+            transition: all 0.2s ease-out;
+        }
+
+        .btn-terminal-toggle:hover {
+            box-shadow: var(--glow-strong);
+            text-shadow: 
+                0 0 10px var(--green-primary),
+                0 0 20px var(--green-primary);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           Matrix Rain Animation
+           ========================================================================== */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .matrix-rain.active {
+            opacity: 0.3;
+        }
+
+        .matrix-column {
+            position: absolute;
+            color: var(--green-secondary);
+            font-family: 'Fira Mono', monospace;
+            font-size: 14px;
+            line-height: 14px;
+            white-space: pre;
+            animation: matrix-fall linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* ==========================================================================
+           Pulse/Glow Effects
+           ========================================================================== */
+        .pulse-effect {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pulse-effect:hover {
+            text-shadow: 
+                0 0 10px var(--green-primary),
+                0 0 20px var(--green-primary),
+                0 0 30px var(--green-primary);
+            transform: scale(1.02);
+        }
+
+        /* Apply pulse effect to all section headers */
+        .section-header:hover {
+            text-shadow: 
+                0 0 10px var(--green-primary),
+                0 0 20px var(--green-primary),
+                0 0 30px var(--green-primary);
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        /* ==========================================================================
+           Accessing Loader Animation
+           ========================================================================== */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 16, 0.9);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loader-overlay.active {
+            display: flex;
+        }
+
+        .loader-text {
+            color: var(--green-primary);
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            text-shadow: var(--glow);
+        }
+
+        .progress-bar {
+            width: 400px;
+            height: 4px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--green-secondary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--green-secondary), var(--green-primary));
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: var(--glow);
+        }
+
+        /* ==========================================================================
+           Boot Sequence Screen
+           ========================================================================== */
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            color: var(--green-primary);
+            font-family: 'Fira Mono', monospace;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem;
+            overflow: hidden;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+
+        .boot-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .boot-line {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: boot-line-appear 0.1s ease-out forwards;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .boot-cursor {
+            display: inline-block;
+            width: 10px;
+            height: 16px;
+            background: var(--green-primary);
+            animation: cursor-blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes boot-line-appear {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .boot-logo {
+            font-size: 18px;
+            color: var(--green-secondary);
+            text-shadow: var(--glow);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: boot-line-appear 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="terminal-mode">
+    <audio id="bootSound" src="shall-we-play-a-game.wav" preload="auto"></audio>
+    
+    <!-- Boot Sequence Screen -->
+    <div class="boot-screen" id="bootScreen">
+        <div class="boot-logo" id="bootLogo">
+            ╔══════════════════════════════════════╗
+            ║    LANCE JAMES SECURITY SYSTEMS     ║
+            ║         Terminal Interface          ║
+            ╚══════════════════════════════════════╝
+        </div>
+        <div id="bootMessages"></div>
+        <div class="boot-cursor" id="bootCursor"></div>
+    </div>
+    
+    <!-- Matrix Rain Background -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <!-- Loader Overlay -->
+    <div class="loader-overlay" id="loaderOverlay">
+        <div class="loader-text" id="loaderText">Accessing...</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="terminal-header">
+                $ lance-james --navigation
+            </div>
+            <ul class="nav-commands">
+                <li onclick="scrollToSection('hero')" onkeydown="handleNavKeydown(event, 'hero')" tabindex="0" aria-label="Navigate to profile and contact section" data-section="hero">
+                    <div class="command">whoami</div>
+                    <div class="description">Profile & Contact</div>
+                </li>
+                <li onclick="scrollToSection('profile')" onkeydown="handleNavKeydown(event, 'profile')" tabindex="0" aria-label="Navigate to about me section" data-section="profile">
+                    <div class="command">cat about_me</div>
+                    <div class="description">About Me & Philosophy</div>
+                </li>
+                <li onclick="scrollToSection('achievements')" onkeydown="handleNavKeydown(event, 'achievements')" tabindex="0" role="menuitem" aria-label="Navigate to notable achievements" data-section="achievements">
+                    <div class="command">ls achievements/</div>
+                    <div class="description">Notable Accomplishments</div>
+                </li>
+                <li onclick="scrollToSection('investigations')" onkeydown="handleNavKeydown(event, 'investigations')" tabindex="0" role="menuitem" aria-label="Navigate to investigations and research" data-section="investigations">
+                    <div class="command">cat investigations.log</div>
+                    <div class="description">Investigations & Research</div>
+                </li>
+                <li onclick="scrollToSection('publications')" onkeydown="handleNavKeydown(event, 'publications')" tabindex="0" role="menuitem" aria-label="Navigate to publications" data-section="publications">
+                    <div class="command">more publications.md</div>
+                    <div class="description">Publications</div>
+                </li>
+                <li onclick="scrollToSection('media')" onkeydown="handleNavKeydown(event, 'media')" tabindex="0" role="menuitem" aria-label="Navigate to talks and media" data-section="media">
+                    <div class="command">play media/*</div>
+                    <div class="description">Talks & Media</div>
+                </li>
+                <li onclick="scrollToSection('skills')" onkeydown="handleNavKeydown(event, 'skills')" tabindex="0" role="menuitem" aria-label="Navigate to technical skills" data-section="skills">
+                    <div class="command">skills --list</div>
+                    <div class="description">Technical Expertise</div>
+                </li>
+                <li onclick="scrollToSection('experience')" onkeydown="handleNavKeydown(event, 'experience')" tabindex="0" role="menuitem" aria-label="Navigate to professional experience" data-section="experience">
+                    <div class="command">cat experience.log</div>
+                    <div class="description">Professional History</div>
+                </li>
+                <li onclick="scrollToSection('affiliations')" onkeydown="handleNavKeydown(event, 'affiliations')" tabindex="0" role="menuitem" aria-label="Navigate to affiliations and board positions" data-section="affiliations">
+                    <div class="command">grep affiliations</div>
+                    <div class="description">Boards & Mentorships</div>
+                </li>
+                <li onclick="scrollToSection('patents')" onkeydown="handleNavKeydown(event, 'patents')" tabindex="0" role="menuitem" aria-label="Navigate to patents and intellectual property" data-section="patents">
+                    <div class="command">find patents/</div>
+                    <div class="description">Awards & Patents</div>
+                </li>
+                <li onclick="scrollToSection('expert')" onkeydown="handleNavKeydown(event, 'expert')" tabindex="0" role="menuitem" aria-label="Navigate to expert witness experience" data-section="expert">
+                    <div class="command">history expert</div>
+                    <div class="description">Expert Witness</div>
+                </li>
+            </ul>
+            
+            <div class="quick-callouts">
+                <div class="terminal-header">Quick Callouts</div>
+                <div class="callout-item" onclick="openExternal('https://www.ted.com/talks/lance_james_how_attackers_can_use_your_brain_against_you_in_psy_ops')" aria-label="TED Talk speaker">
+                    <span class="callout-key">TED</span>
+                    <span>Psy-Ops Talk</span>
+                </div>
+                <div class="callout-item" onclick="openExternal('https://www.imdb.com/name/nm13835409/')" aria-label="Mr. Robot expert subject on IMDb">
+                    <span class="callout-key">Mr Robot</span>
+                    <span>Expert Subject (IMDb)</span>
+                </div>
+                <div class="callout-item" onclick="openExternal('https://www.maltego.com/podcast/unit-221bs-lance-james-on-how-failure-is-the-leading-cause-of-success/')" aria-label="Maltego podcast appearance">
+                    <span class="callout-key">Maltego</span>
+                    <span>Failure & Success</span>
+                </div>
+                <div class="callout-item" onclick="openExternal('https://torrentfreak.com/i2p-the-censorship-resistant-anonymous-p2p-network-is-20-years-old-220306/')" aria-label="I2P founder and creator">
+                    <span class="callout-key">I2P</span>
+                    <span>Founder</span>
+                </div>
+            </div>
+            
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content" role="main">
+            <!-- Hero Section -->
+            <section class="hero" id="hero">
+                <div class="profile-container">
+                    <div class="profile-ring">
+                        <img class="profile-image" 
+                             src="https://i.ibb.co/Pz5s2hMP/image.png" 
+                             alt="Lance James - Chief Innovations Officer at Unit 221B"
+                             width="200" 
+                             height="200"
+                             loading="eager"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                        <div style="display:none; color: var(--text-dim); text-align: center; font-size: 0.8rem;">
+                            Profile Image<br>Loading...
+                        </div>
+                    </div>
+                </div>
+                <h1 class="hero-name">LANCE JAMES</h1>
+                <h2 class="hero-title">Chief Innovations Officer & Founder</h2>
+                <p class="hero-subtitle">"The unsolvable problems are my home turf. I blend technical depth with first-principles leadership, forged in Zen philosophies and battle-tested in the world's most adversarial cybersecurity arenas."</p>
+                
+                <div class="hero-badges">
+                    <span class="badge" onclick="openExternal('https://unit221b.com')" tabindex="0" role="button" aria-label="Learn about Unit 221B's Series Seed funding">$5M Seed Funding (2025)</span>
+                    <span class="badge" onclick="openExternal('https://github.com/lancejames221b/agent-hivemind')" tabindex="0" role="button" aria-label="View Agent Hivemind on GitHub">Agent Hivemind (Open Source)</span>
+                    <span class="badge" onclick="openExternal('https://spinscore.io')" tabindex="0" role="button" aria-label="Visit SpinScore AI Bias Detection platform">SpinScore AI Bias Detection</span>
+                    <span class="badge" onclick="openExternal('https://www.ted.com/talks/lance_james_how_attackers_can_use_your_brain_against_you_in_psy_ops')" tabindex="0" role="button" aria-label="Watch TED Talk: How Attackers Can Use Your Brain Against You in Psy-Ops">TED Speaker</span>
+                    <span class="badge" onclick="scrollToSection('experience')" tabindex="0" role="button" aria-label="View professional experience">25+ Years Cyber Ops</span>
+                    <span class="badge" onclick="scrollToSection('achievements')" tabindex="0" role="button" aria-label="View ransomware case details">"Unsolvable" Ransomware Cases</span>
+                </div>
+                
+                <div class="hero-contact">
+                    <div class="contact-item" tabindex="0" aria-label="Email address">
+                        <span>📧 lance@unit221b.com</span>
+                        <button class="copy-btn" onclick="copyToClipboard('lance@unit221b.com')" aria-label="Copy email to clipboard">copy</button>
+                    </div>
+                    <a class="contact-item" href="https://linkedin.com/in/unit221b" target="_blank" rel="noopener noreferrer" aria-label="Open LinkedIn profile">
+                        <span>🔗 LinkedIn Profile</span>
+                    </a>
+                    <a class="contact-item" href="https://unit221b.com" target="_blank" rel="noopener noreferrer" aria-label="Open company website">
+                        <span>🌐 Company Website</span>
+                    </a>
+                    <a class="contact-item" href="https://www.ted.com/talks/lance_james_how_attackers_can_use_your_brain_against_you_in_psy_ops" target="_blank" rel="noopener noreferrer" aria-label="Open TED Talk">
+                        <span>🎥 TED Talk</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section class="section" id="profile">
+                <h3 class="section-header pulse-effect" data-text="$ cat about_me.txt">cat about_me.txt</h3>
+                <div class="terminal-output">
+                    <p><strong>Lance James</strong> — Chief Innovations Officer & Founder, Unit 221B</p>
+                    <br>
+                    <p>Internationally recognized cybersecurity innovator, investigator, and founder with <strong>25+ years</strong> at the intersection of cyber defense, digital forensics, and executive leadership. Pioneered advances in malware attribution, credited with identifying early infrastructure and attribution for the Zeus malware. Trusted advisor to high-security government agencies and Fortune 500 organizations.</p>
+                    <br>
+                    <p><strong>2024–2025 Highlights:</strong></p>
+                    <ul class="achievements">
+                        <li>Orchestrated Unit 221B's $5M seed funding round (March 2025) and transitioned to Chief Innovations Officer, sharpening the company's focus on AI/ML-driven threat detection and digital trust.</li>
+                        <li>Created open-source <a href="https://github.com/lancejames221b/agent-hivemind" target="_blank" rel="noopener noreferrer" style="color: var(--green-secondary);">Agent Hivemind</a>: A collective memory system for distributed AI—enabling next-level automation in incident response and DevOps.</li>
+                        <li>Led deconstruction of ByteDance's "Trae" AI platform, exposing new vectors for data transparency and digital rights.</li>
+                        <li>Designed <a href="https://spinscore.io" target="_blank" rel="noopener noreferrer" style="color: var(--green-secondary);">SpinScore</a>, a cutting-edge tool for real-time bias detection and misinformation analysis in media streams.</li>
+                    </ul>
+                    <br>
+                    <p><strong>Media & Industry Impact:</strong></p>
+                    <p>Frequent podcast guest (Maltego's "Human Element", Forcepoint's "Even Soldiers Rest on Sundays"), TED speaker, MSNBC commentator, and expert subject for USA's "Mr. Robot." Patents in threat intelligence, multi-factor authentication, and counterintelligence frameworks.</p>
+                    <br>
+                    <p><strong>Leadership & Philosophy:</strong></p>
+                    <p>Champions "heart first, skill second" leadership, psychological safety, "slowing down" under crisis, and mentoring emerging leaders through gratitude and transparency. Global public speaker, advocate for diverse, ethical security, and mentor/judge at hackathons and university cybersecurity programs.</p>
+                </div>
+            </section>
+
+            <!-- Notable Achievements -->
+            <section class="section" id="achievements">
+                <h3 class="section-header pulse-effect" data-text="$ ls achievements/ --detailed">ls achievements/ --detailed</h3>
+                <div class="terminal-output">
+                    <ul class="achievements">
+                        <li><strong>Orchestrated Unit 221B's $5M seed funding round (March 2025)</strong> and transitioned to Chief Innovations Officer, sharpening the company's focus on AI/ML-driven threat detection and digital trust frameworks.</li>
+                        <li><strong>Created open-source "Agent Hivemind"</strong> - A collective memory system for distributed AI enabling next-level automation in incident response and DevOps workflows (MIT licensed, GitHub community adoption).</li>
+                        <li><strong>Led deconstruction of ByteDance's "Trae" AI platform</strong>, exposing new vectors for data transparency and digital rights, providing critical intelligence to government stakeholders.</li>
+                        <li><strong>Designed SpinScore</strong> - A cutting-edge tool for real-time bias detection and misinformation analysis in media streams, deployed across intelligence community partners.</li>
+                        <li><strong>Pioneered advances in malware attribution and cyber threat intelligence;</strong> credited with identifying early infrastructure and attribution for the Zeus malware.</li>
+                        <li><strong>Contributed to several FBI-led takedown operations</strong> of criminal organizations through strategic alliances with industry, academia, and law enforcement.</li>
+                        <li><strong>Solved "unsolvable" ransomware cases</strong> using novel attribution techniques and cross-domain intelligence fusion methodologies.</li>
+                        <li><strong>Expanded Chief Scientist role at Flashpoint to include VP of Engineering,</strong> fixing development processes and delivering record-breaking quarters of market-leading product.</li>
+                        <li><strong>Invented credential recovery and developed the industry's first malware breach notification monitoring capability</strong> at Secure Science.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Case Studies -->
+            <section class="section" id="case-studies">
+                <h3 class="section-header">cat case_studies.log</h3>
+                <div class="terminal-output">
+                    <div class="experience-item">
+                        <div class="job-title" style="font-size: 1.2rem;">Zeppelin Ransomware Decryption</div>
+                        <p class="job-description" style="font-size: 0.9rem;">Successfully decrypted Zeppelin ransomware, a variant targeting critical infrastructure, leading to the recovery of millions of dollars for victims and providing crucial intelligence to law enforcement agencies.</p>
+                        <a href="https://blog.unit221b.com/dont-read-this-blog/0xdead-zeppelin" target="_blank" rel="noopener noreferrer" class="badge">Read the Research</a>
+                    </div>
+                    <div class="experience-item">
+                        <div class="job-title" style="font-size: 1.2rem;">ByteDance "Trae" AI Platform Investigation</div>
+                        <p class="job-description" style="font-size: 0.9rem;">A deep-dive technical analysis of ByteDance's AI coding assistant, revealing a sophisticated, enterprise-grade telemetry and data collection system operating within the application.</p>
+                        <a href="https://blog.unit221b.com/dont-read-this-blog/unveiling-trae-bytedances-ai-ide-and-its-extensive-data-collection-system" target="_blank" rel="noopener noreferrer" class="badge">Read the Research</a>
+                    </div>
+                    <div class="experience-item">
+                        <div class="job-title" style="font-size: 1.2rem;">Agent Hivemind (Open Source)</div>
+                        <p class="job-description" style="font-size: 0.9rem;">An open-source collective memory system for distributed AI agents, enabling next-level automation in incident response, DevOps, and complex problem-solving.</p>
+                        <a href="https://github.com/lancejames221b/agent-hivemind" target="_blank" rel="noopener noreferrer" class="badge">View on GitHub</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Investigations and Research -->
+            <section class="section" id="investigations">
+                <h3 class="section-header">cat /var/log/investigations.log</h3>
+                <div class="terminal-output">
+                    <ul class="achievements">
+                        <li onclick="openExternal('https://blog.unit221b.com/dont-read-this-blog/unveiling-trae-bytedances-ai-ide-and-its-extensive-data-collection-system')" style="cursor: pointer;">
+                            <strong>ByteDance "Trae" AI Platform Investigation</strong>
+                            <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;">
+                                Deep dive into ByteDance's internal AI development environment, revealing extensive data collection systems.
+                                <span style="color: var(--green-secondary); text-decoration: underline;">Read on Unit 221B blog</span>
+                            </p>
+                        </li>
+                        <li onclick="openExternal('https://blog.unit221b.com/dont-read-this-blog/0xdead-zeppelin')" style="cursor: pointer;">
+                            <strong>Zeppelin Ransomware Decryption</strong>
+                             <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;">
+                                Successful decryption of Zeppelin ransomware, leading to the recovery of millions of dollars for victims.
+                                <span style="color: var(--green-secondary); text-decoration: underline;">Read on Unit 221B blog</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Publications -->
+            <section class="section" id="publications">
+                <h3 class="section-header">more publications.md</h3>
+                <div class="terminal-output">
+                    <h4 style="color: var(--green-primary); margin-bottom: 1.5rem; text-shadow: var(--glow);">Featured Research: Zeus & SpyEye Malware</h4>
+                    <div class="affiliation-item" onclick="openExternal('http://www.honeynet.org/SecurityWorkshops/2011_Paris/Session4_3-Spy')" style="cursor: pointer;">
+                        <strong>Spy vs Spy: Countering SpyEye with SpyEye</strong> (Honeynet Project)
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.linkedin.com/in/unit221b')" style="cursor: pointer;">
+                        <strong>Spy vs SpyEye (Part 1)</strong> — Damballa
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.linkedin.com/in/unit221b')" style="cursor: pointer;">
+                        <strong>Spy vs SpyEye Part 2: Traffics, Targets and Taxonomy</strong> — Damballa
+                    </div>
+                     <div class="affiliation-item" onclick="openExternal('https://my.safaribooksonline.com/book/networking/security/9780071772495/chapter-9-attack-characterization-techniques/c70')" style="cursor: pointer;">
+                        <strong>Reverse Deception (Chapter 9 – Real World Tactics)</strong>, contributed research (McGraw-Hill/Safari)
+                    </div>
+                </div>
+            </section>
+
+            <!-- Talks & Media -->
+            <section class="section" id="media">
+                <h3 class="section-header">play media/* --all</h3>
+                <div class="terminal-output">
+                    <h4 style="color: var(--green-primary); margin-bottom: 1.5rem; text-shadow: var(--glow);">Selected Talks</h4>
+                    <div class="affiliation-item" onclick="openExternal('https://www.ted.com/talks/lance_james_how_attackers_can_use_your_brain_against_you_in_psy_ops')" style="cursor: pointer;">
+                        <strong>2019 - TEDx - How Attackers Can Use Your Brain Against You in Psy-Ops</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.linkedin.com/in/unit221b/')" style="cursor: pointer;">
+                        <strong>2014 - Black Hat USA - CryptoLocker: A Deep Dive</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.linkedin.com/in/unit221b/')" style="cursor: pointer;">
+                        <strong>2013 - Black Hat USA - SpyJacking the Booters</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://blackhatmea.com/speaker/lance-james')" style="cursor: pointer;">
+                        <strong>2022-2024 - Black Hat MEA - Speaker & Panelist</strong>
+                        <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;">
+                            Sessions include: "Disrupting Ransomware," "ChatGPT Unlocked," and "Mental Health & Burnout in Security."
+                        </p>
+                    </div>
+                    <br>
+                    <h4 style="color: var(--green-primary); margin-bottom: 1.5rem; text-shadow: var(--glow);">Media & Podcasts</h4>
+                    <div class="affiliation-item" onclick="openExternal('https://insights.blackhatmea.com/bringing-zen-into-cybersecurity/')" style="cursor: pointer;">
+                        <strong>Black Hat MEA Insights - Bringing Zen into Cybersecurity</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.forcepoint.com/resources/podcast/lance-james-even-soldiers-rest-sundays-ep-137')" style="cursor: pointer;">
+                        <strong>Forcepoint Podcast - Even Soldiers Rest on Sundays (Ep. 137)</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.youtube.com/watch?v=iln0gxHG8OI')" style="cursor: pointer;">
+                        <strong>Hyperdrive Minds Podcast - Ransomware with Lance James</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://krebsonsecurity.com/2022/11/researchers-quietly-cracked-zeppelin-ransomware-keys/')" style="cursor: pointer;">
+                        <strong>KrebsOnSecurity: Researchers Quietly Cracked Zeppelin Ransomware Keys</strong>
+                    </div>
+                    <div class="affiliation-item" onclick="openExternal('https://www.bleepingcomputer.com/news/security/researchers-secretly-helped-decrypt-zeppelin-ransomware-for-2-years/')" style="cursor: pointer;">
+                        <strong>BleepingComputer: Researchers secretly helped decrypt Zeppelin ransomware for 2 years</strong>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="section" id="skills">
+                <h3 class="section-header">skills --list --verbose</h3>
+                <div class="skills-grid">
+                    <div class="skill-item">Leadership & Management</div>
+                    <div class="skill-item">AI/ML Development</div>
+                    <div class="skill-item">Threat Intelligence</div>
+                    <div class="skill-item">Cybersecurity</div>
+                    <div class="skill-item">Counterintelligence</div>
+                    <div class="skill-item">DevOps Automation</div>
+                    <div class="skill-item">Microservices</div>
+                    <div class="skill-item">Python & ML Frameworks</div>
+                    <div class="skill-item">Cryptography</div>
+                    <div class="skill-item">Digital Forensics</div>
+                    <div class="skill-item">Public Speaking</div>
+                    <div class="skill-item">Expert Witness</div>
+                </div>
+            </section>
+
+            <!-- Professional Experience -->
+            <section class="section" id="experience">
+                <h3 class="section-header pulse-effect" data-text="$ cat experience.log">cat experience.log</h3>
+                
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Chief Innovations Officer & Founder</div>
+                                <div class="company">Unit 221B, Inc., New York</div>
+                            </div>
+                            <div class="job-date">July 2024 — Present</div>
+                        </div>
+                        <p class="job-description">
+                            Oversee Engineering and Innovation for Unit 221B following successful $5M Series Seed funding round in March 2025. Lead specialized services for select clients, including discreet advanced cyber operations and AI-driven cybersecurity solutions. Focus on "heart first, skill second" leadership approach with zen-based management philosophy.
+                        </p>
+                        <ul class="achievements">
+                            <li>Successfully closed $5M Series Seed funding round in March 2025, incorporating company as Unit 221B, Inc.</li>
+                            <li>Developed Agent Hivemind - Distributed AI collective memory MCP server for DevOps automation and multi-agent coordination.</li>
+                            <li>Created SpinScore AI tool for analyzing potential biases, logical fallacies, and misleading information in content.</li>
+                            <li>Led research investigation of ByteDance's internal AI development platform "Trae" and data collection systems.</li>
+                            <li>Pioneered Zeppelin ransomware decryption breakthrough (2020-2022), saving dozens of organizations millions in ransom payments through innovative cryptographic analysis.</li>
+                            <li>Continued development of machine learning systems for extremism threat detection with real-time prioritization.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Chief Executive Officer</div>
+                                <div class="company">Unit 221B, LLC, New York</div>
+                            </div>
+                            <div class="job-date">May 2015 — July 2024</div>
+                        </div>
+                        <p class="job-description">
+                            Led specialized services for select clients, including discreet advanced cyber operations. Recruited and managed specialists in information security, cryptography, forensics, legal, investigations, law enforcement, and intelligence. Developed machine learning system to detect extremism threats in multiple languages with real-time prioritization.
+                        </p>
+                        <ul class="achievements">
+                            <li>Formed key security partnerships for Forensics, Red Teaming, and Investigations.</li>
+                            <li>Organically grew company to 15 staff members including executives, software developers, and security specialists.</li>
+                            <li>Designed and developed encrypted multi-factor authentication file system prototype.</li>
+                            <li>Established foundation for successful Series Seed funding round and company incorporation.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Chief Scientist/VP Engineering</div>
+                                <div class="company">Flashpoint Intelligence, NYC</div>
+                            </div>
+                            <div class="job-date">November 2018 — January 2020</div>
+                        </div>
+                        <p class="job-description">
+                            Led a full-stack engineering team, integrating with product, intel, marketing, and sales teams to align technology vision, go-to-market strategy, and business objectives. Transitioned to initiative-based teams combining intel, product, and engineering using Standardized Agile Practices.
+                        </p>
+                        <ul class="achievements">
+                            <li>In 2019, led 41 releases, delivered 650 new data sources, and achieved 10x data growth—an 80% improvement over the previous three years combined.</li>
+                            <li>Managed hosting costs while delivering innovation with lean methodology.</li>
+                            <li>Standardized application monitoring and metrics, and implemented leadership tools like Gitprime.</li>
+                            <li>Automated monthly, quarterly, and yearly capital expense reports using Python and Jira.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Chief Scientist/Acting CISO</div>
+                                <div class="company">Flashpoint Intelligence, NYC</div>
+                            </div>
+                            <div class="job-date">October 2015 — November 2018</div>
+                        </div>
+                        <p class="job-description">
+                            Led three successful teams in R&D, Information Security, and IT. Designed and developed a machine-learning relevancy-based alerting system for intelligence analysts using NLP, Doc2Vec, and Python. Collaborated with engineering on delivering advanced prototypes involving machine learning, cryptography, intelligence collections, and breach notification monitoring.
+                        </p>
+                        <ul class="achievements">
+                            <li>Served as U.S. Government Intelligence Community Liaison Officer for Flashpoint security and legal matters.</li>
+                            <li>Built and led 6-person research team focused on innovative data science projects for deep and dark web data.</li>
+                            <li>Built and led 6-person Security/IT team.</li>
+                            <li>Designed standard operating procedures for dark web purchases of stolen credentials and threat actor engagement under Title 18 U.S. Code § 1029.</li>
+                            <li>Implemented NIST-based Risk Management Framework, Vendor Management Program, and comprehensive security controls.</li>
+                            <li>Led the 2017-2018 GDPR compliance assessment and implemented new policies.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Head of Cyber Intelligence</div>
+                                <div class="company">Deloitte & Touche, NYC</div>
+                            </div>
+                            <div class="job-date">May 2013 — August 2015</div>
+                        </div>
+                        <p class="job-description">
+                            Designed and established one of the first cyber intelligence and counterintelligence programs at Deloitte. Built and led R&D and Engineering teams developing high-performance threat intelligence SIEM integration platform. Integrated intelligence capabilities with Deloitte federal division for government operations.
+                        </p>
+                        <ul class="achievements">
+                            <li>Evangelized capabilities across Fortune 500 client base.</li>
+                            <li>Expanded team from 8 to 25 members within the first year.</li>
+                            <li>Helped FBI expand NCFTA offices beyond Pittsburgh to Los Angeles and NYC.</li>
+                            <li>Designed departmental marketing strategy.</li>
+                            <li>Integrated advanced research into weekly SOC training program.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Chief Scientist</div>
+                                <div class="company">Vigilant, Inc., Jersey City (Acquired by Deloitte)</div>
+                            </div>
+                            <div class="job-date">January 2011 — May 2013</div>
+                        </div>
+                        <p class="job-description">
+                            Established R&D and Engineering team to develop high-performance collective threat intelligence platform. Designed and developed the first version of the platform including patents. Created indicators scoring and analytics system as a microservice delivered via zeromq data pipeline.
+                        </p>
+                        <ul class="achievements">
+                            <li>Implemented agile processes for engineering efficiency.</li>
+                            <li>Company acquired by Deloitte in 2015 specifically for this team and technology.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="terminal-output">
+                        <div class="job-header">
+                            <div>
+                                <div class="job-title">Chief Executive Officer</div>
+                                <div class="company">Secure Science Corp, San Diego</div>
+                            </div>
+                            <div class="job-date">November 2003 — November 2010</div>
+                        </div>
+                        <p class="job-description">
+                            Served as CEO and acting CTO of one of the first threat intelligence companies. Led software engineering teams developing anti-phishing technology. Directed intelligence teams performing investigations for top US financial institutions including Wells Fargo, Bank of America, and PayPal.
+                        </p>
+                        <ul class="achievements">
+                            <li>Established and trained government clients including DoD, CIA, FBI, and United Nations in advanced cyber counterintelligence operations.</li>
+                            <li>Managed marketing and PR, establishing the company as leading cybercrime experts in news media.</li>
+                            <li>Discovered and reported critical vulnerabilities affecting social networks, telecommunications companies, governments, and banking sectors.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Affiliations -->
+            <section class="section" id="affiliations">
+                <h3 class="section-header">grep -r affiliations</h3>
+                <div class="affiliations-grid">
+                    <div class="terminal-output">
+                        <h4 style="color: var(--green-primary); margin-bottom: 1rem;">Board Positions & Leadership</h4>
+                        <div class="affiliation-item" onclick="openExternal('https://torrentfreak.com/i2p-the-censorship-resistant-anonymous-p2p-network-is-20-years-old-220306/')" style="cursor: pointer;">I2P (Founder and Creator)</div>
+                        <div class="affiliation-item">Invincea (Board Member – acquired by Sophos)</div>
+                        <div class="affiliation-item">NorSec (Board Member & Director of Intelligence)</div>
+                        <div class="affiliation-item">Vysk (Board Member)</div>
+                    </div>
+                    <div class="terminal-output">
+                        <h4 style="color: var(--green-primary); margin-bottom: 1rem;">Academic Mentorship</h4>
+                        <div class="affiliation-item">New York University (Mentor)</div>
+                        <div class="affiliation-item">University of California, Berkeley (Mentor)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Awards & Patents -->
+            <section class="section" id="patents">
+                <h3 class="section-header">find /patents -name "*.patent"</h3>
+                <div class="terminal-output">
+                    <div class="affiliation-item" onclick="openExternal('https://patents.google.com/patent/US8813228B2')" style="cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='var(--green-dim)'" onmouseout="this.style.background='transparent'">
+                        <strong>Collective Threat Intelligence Gathering System</strong><br>
+                        US Patent 8,813,228 B2
+                    </div>
+                </div>
+            </section>
+
+            <!-- Expert Witness -->
+            <section class="section" id="expert">
+                <h3 class="section-header">history | grep "expert witness"</h3>
+                <div class="terminal-output">
+                    <div class="affiliations-grid">
+                        <div>
+                            <div class="affiliation-item">Palisades Park vs Mariner's Bank</div>
+                            <div class="affiliation-item">Precision Computer Services vs Newtown Savings Bank</div>
+                            <div class="affiliation-item">Banco Del Austro vs Wells Fargo Bank</div>
+                            <div class="affiliation-item">DOJ/FBI – SpyEye Sentencing Hearing</div>
+                            <div class="affiliation-item">Oregon Hay vs Community Bank</div>
+                        </div>
+                        <div>
+                            <div class="affiliation-item">Village View vs Professional Business Bank</div>
+                            <div class="affiliation-item">FBI Legal Attaché Bucharest – 288A-OC-66888</div>
+                            <div class="affiliation-item">Experi-Metal vs Comerica Bank</div>
+                            <div class="affiliation-item">House of Representatives – H.R. 5126</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="Back to top">
+        ↑
+    </button>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Terminal Toggle Button -->
+    <button class="btn-terminal-toggle" id="btnTerminalToggle" onclick="toggleTerminal()" aria-label="Toggle terminal">>_</button>
+
+        <!-- Interactive Terminal Modal -->
+        <div id="terminal-window" class="terminal-window">
+            <div class="terminal-header" id="terminal-header">
+                <div class="terminal-title">╬ WOPR SECURE TERMINAL ╬ lance@unit221b:~$</div>
+                <button class="terminal-close" onclick="toggleTerminal()">[ X ]</button>
+            </div>
+        <div class="terminal-body" id="terminal-body">
+            <div class="terminal-output" id="terminal-output">
+                <!-- Initial welcome message will be added by JS -->
+            </div>
+            <div class="terminal-input-wrapper">
+                <span class="prompt">$ </span>
+                <input type="text" class="terminal-input" id="terminal-input" autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // State management
+        let autoScrolling = false;
+        let scrollSpeed = 30;
+        let animationId = null;
+        let lastScrollTime = 0;
+        const scrollThrottle = 16; // ~60fps
+        let currentSection = 'hero';
+        
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (prefersReducedMotion) {
+            document.body.classList.add('no-auto-scroll');
+            autoScrolling = false;
+        }
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('mobile-hidden');
+            sidebar.classList.toggle('mobile-visible');
+        }
+        
+        // Handle navigation keydown events
+        function handleNavKeydown(event, sectionId) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                scrollToSection(sectionId);
+            }
+        }
+        
+        // Improved typewriter effect with better performance
+        function typewriter(element, text, speed = 50) {
+            if (prefersReducedMotion) {
+                element.innerHTML = text;
+                element.style.opacity = '1';
+                return;
+            }
+            
+            element.innerHTML = '';
+            element.style.opacity = '1';
+            element.classList.add('typewriter');
+            
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text[i];
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    element.classList.remove('typewriter');
+                }
+            }, speed);
+        }
+        
+        // Initialize animations with proper loading checks
+        function initAnimations() {
+            // Wait for fonts and images to load
+            Promise.all([
+                document.fonts.ready,
+                new Promise(resolve => {
+                    const profileImg = document.querySelector('.profile-image');
+                    if (profileImg && profileImg.complete) {
+                        resolve();
+                    } else if (profileImg) {
+                        profileImg.onload = resolve;
+                        profileImg.onerror = resolve;
+                        // Fallback timeout
+                        setTimeout(resolve, 2000);
+                    } else {
+                        resolve();
+                    }
+                })
+            ]).then(() => {
+                setTimeout(() => {
+                    const heroName = document.querySelector('.hero-name');
+                    const heroTitle = document.querySelector('.hero-title');
+                    const heroSubtitle = document.querySelector('.hero-subtitle');
+                    const heroBadges = document.querySelector('.hero-badges');
+                    const heroContact = document.querySelector('.hero-contact');
+                    
+                    if (prefersReducedMotion) {
+                        // Show everything immediately for reduced motion
+                        [heroName, heroTitle, heroSubtitle, heroBadges, heroContact].forEach(el => {
+                            if (el) {
+                                el.style.opacity = '1';
+                                el.classList.add('fade-in-up');
+                            }
+                        });
+                        if (heroName) heroName.textContent = 'LANCE JAMES';
+                        if (heroTitle) heroTitle.textContent = 'Chief Innovations Officer & Founder';
+                        return;
+                    }
+                    
+                    // Animated sequence
+                    if (heroName) typewriter(heroName, 'LANCE JAMES', 100);
+                    
+                    setTimeout(() => {
+                        if (heroTitle) typewriter(heroTitle, 'Chief Innovations Officer & Founder', 80);
+                    }, 1500);
+                    
+                    setTimeout(() => {
+                        if (heroSubtitle) {
+                            heroSubtitle.style.opacity = '1';
+                            heroSubtitle.classList.add('fade-in-up');
+                        }
+                    }, 2500);
+                    
+                    setTimeout(() => {
+                        if (heroBadges) {
+                            heroBadges.style.opacity = '1';
+                            heroBadges.classList.add('fade-in-up');
+                        }
+                    }, 3000);
+                    
+                    setTimeout(() => {
+                        if (heroContact) {
+                            heroContact.style.opacity = '1';
+                            heroContact.classList.add('fade-in-up');
+                        }
+                    }, 3500);
+                }, 500);
+            });
+        }
+        
+        // Intersection Observer for section animations and navigation highlighting
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -200px 0px'
+        };
+        
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Update active navigation
+                    const sectionId = entry.target.id;
+                    updateActiveNavigation(sectionId);
+                    currentSection = sectionId;
+                    
+                    // Animate section content
+                    entry.target.style.opacity = '1';
+                    entry.target.classList.add('fade-in-up');
+                    
+                    // Animate section headers with typewriter effect
+                    const header = entry.target.querySelector('.section-header');
+                    if (header && !header.classList.contains('animated')) {
+                        header.classList.add('animated');
+                        header.style.opacity = '1';
+                        
+                        // Use the text as-is since CSS ::before already adds the $
+                        const text = header.textContent;
+                        if (prefersReducedMotion) {
+                            header.textContent = text;
+                        } else {
+                            typewriter(header, text, 30);
+                        }
+                    }
+                    
+                    // Animate experience items and skills
+                    const items = entry.target.querySelectorAll('.experience-item, .skill-item');
+                    items.forEach((item, index) => {
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.classList.add('fade-in-up');
+                        }, prefersReducedMotion ? 0 : index * 200);
+                    });
+                }
+            });
+        }, observerOptions);
+        
+        // Update active navigation highlighting
+        function updateActiveNavigation(sectionId) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-commands li').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to current section nav item
+            const activeNavItem = document.querySelector(`[data-section="${sectionId}"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+        }
+        
+        // Observe all sections
+        document.querySelectorAll('.section, .hero').forEach(el => {
+            sectionObserver.observe(el);
+        });
+        
+        // Smooth scrolling for navigation with proper positioning
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                autoScrolling = false;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                
+                // Reset header animation for re-triggering
+                const header = element.querySelector('.section-header');
+                if (header) {
+                    header.classList.remove('animated');
+                    header.style.opacity = '0';
+                }
+                
+                // Use scrollIntoView for reliable scrolling
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                    inline: 'nearest'
+                });
+                
+                // Trigger header animation after scroll
+                setTimeout(() => {
+                    if (header && !header.classList.contains('animated')) {
+                        header.classList.add('animated');
+                        header.style.opacity = '1';
+                        
+                        const text = header.textContent;
+                        if (!prefersReducedMotion) {
+                            typewriter(header, text, 30);
+                        }
+                    }
+                }, 500);
+                
+                // Hide mobile menu after navigation
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.getElementById('sidebar');
+                    sidebar.classList.add('mobile-hidden');
+                    sidebar.classList.remove('mobile-visible');
+                }
+                
+                // Update active navigation immediately
+                updateActiveNavigation(sectionId);
+            }
+        }
+        
+        // Scroll to top function
+        function scrollToTop() {
+            const mainContent = document.getElementById('main-content');
+            mainContent.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Back to top button visibility
+        function updateBackToTopButton() {
+            const mainContent = document.getElementById('main-content');
+            const backToTopBtn = document.getElementById('backToTop');
+            
+            if (mainContent.scrollTop > 500) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        }
+        
+        // Improved auto-scroll with requestAnimationFrame
+        function performAutoScroll() {
+            if (!autoScrolling || prefersReducedMotion) return;
+            
+            const now = performance.now();
+            if (now - lastScrollTime < scrollThrottle) {
+                animationId = requestAnimationFrame(performAutoScroll);
+                return;
+            }
+            lastScrollTime = now;
+            
+            const mainContent = document.getElementById('main-content');
+            const scrollHeight = mainContent.scrollHeight - mainContent.clientHeight;
+            
+            if (mainContent.scrollTop < scrollHeight) {
+                mainContent.scrollTop += 1;
+                animationId = requestAnimationFrame(performAutoScroll);
+            } else {
+                autoScrolling = false;
+                animationId = null;
+            }
+        }
+        
+        function startAutoScroll() {
+            if (prefersReducedMotion) return;
+            autoScrolling = true;
+            if (!animationId) {
+                animationId = requestAnimationFrame(performAutoScroll);
+            }
+        }
+        
+        // Improved keyboard controls with input focus checking
+        function isInputFocused() {
+            const activeElement = document.activeElement;
+            return activeElement && (
+                activeElement.tagName === 'INPUT' ||
+                activeElement.tagName === 'TEXTAREA' ||
+                activeElement.contentEditable === 'true' ||
+                activeElement.isContentEditable
+            );
+        }
+        
+        
+        // External link handler
+        function openExternal(url) {
+            if (url) {
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        }
+        
+        // Improved copy to clipboard with fallback and better error handling
+        async function copyToClipboard(text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    showToast(`Copied: ${text}`, 'success');
+                } else {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-999999px';
+                    textArea.style.top = '-999999px';
+                    textArea.setAttribute('readonly', '');
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    textArea.setSelectionRange(0, 99999); // For mobile devices
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showToast(`Copied: ${text}`, 'success');
+                        } else {
+                            throw new Error('Copy command failed');
+                        }
+                    } catch (err) {
+                        showToast('Copy failed - please select and copy manually', 'error');
+                    } finally {
+                        document.body.removeChild(textArea);
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                showToast('Copy failed - please try again', 'error');
+            }
+        }
+        
+        // Improved toast system with better UX
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast';
+            
+            if (type === 'error') {
+                toast.classList.add('error');
+            }
+            
+            toast.classList.add('show');
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Focus management for accessibility
+        document.querySelectorAll('.nav-commands li, .contact-item, .badge').forEach(item => {
+            item.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    item.click();
+                }
+            });
+        });
+        
+        // Prevent focus trap in mobile menu
+        function trapFocus(element) {
+            const focusableElements = element.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            
+            element.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstElement) {
+                            lastElement.focus();
+                            e.preventDefault();
+                        }
+                    } else {
+                        if (document.activeElement === lastElement) {
+                            firstElement.focus();
+                            e.preventDefault();
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start boot sequence instead of direct animations
+            startBootSequence();
+            
+            // Initialize terminal functionality
+            initializeTerminal();
+            
+            // Setup focus trapping for sidebar
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                trapFocus(sidebar);
+            }
+            
+            // Setup scroll event listener for back to top button
+            const mainContent = document.getElementById('main-content');
+            mainContent.addEventListener('scroll', updateBackToTopButton);
+            
+            // Initialize mobile menu state
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('mobile-hidden');
+            }
+            
+            // Delay auto-scroll to let hero animation finish (only if motion is allowed)
+            if (!prefersReducedMotion) {
+                setTimeout(() => {
+                    startAutoScroll();
+                }, 6000);
+            }
+        });
+        
+        // Stop auto-scroll on user interaction
+        const mainContent = document.getElementById('main-content');
+        
+        ['wheel', 'touchstart', 'keydown'].forEach(event => {
+            mainContent.addEventListener(event, () => {
+                autoScrolling = false;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            }, { passive: true });
+        });
+        
+        // Handle window resize for mobile menu
+        window.addEventListener('resize', () => {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('mobile-hidden', 'mobile-visible');
+            } else {
+                sidebar.classList.add('mobile-hidden');
+                sidebar.classList.remove('mobile-visible');
+            }
+        });
+        
+        // Click outside to close mobile menu
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 768 && 
+                !sidebar.contains(e.target) && 
+                !menuBtn.contains(e.target) &&
+                sidebar.classList.contains('mobile-visible')) {
+                sidebar.classList.add('mobile-hidden');
+                sidebar.classList.remove('mobile-visible');
+            }
+        });
+        
+        
+        // Image error handling for better UX
+        const profileImage = document.querySelector('.profile-image');
+        if (profileImage) {
+            // Add better error handling
+            profileImage.addEventListener('error', (e) => {
+                console.warn('Profile image failed to load, trying alternative approaches');
+                
+                // Try different approaches to load the image
+                const img = e.target;
+                
+                // First fallback: try without crossorigin
+                if (img.hasAttribute('crossorigin')) {
+                    img.removeAttribute('crossorigin');
+                    img.src = img.src + '?retry=1';
+                    return;
+                }
+                
+                // Second fallback: try with different parameters
+                if (!img.src.includes('retry=2')) {
+                    img.src = 'https://i.ibb.co/Pz5s2hMP/image.png?retry=2';
+                    return;
+                }
+                
+                // Final fallback: hide image and show placeholder
+                img.style.display = 'none';
+                const ring = img.closest('.profile-ring');
+                if (ring) {
+                    ring.innerHTML = `
+                        <div style="
+                            width: 180px; 
+                            height: 180px; 
+                            border-radius: 50%; 
+                            background: linear-gradient(135deg, var(--green-dim) 0%, var(--bg-primary) 100%);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: var(--green-primary);
+                            font-weight: 600;
+                            text-align: center;
+                            font-size: 1rem;
+                            text-shadow: var(--glow);
+                        ">
+                            LANCE<br>JAMES
+                        </div>
+                    `;
+                }
+            });
+            
+            profileImage.addEventListener('load', () => {
+                console.log('Profile image loaded successfully');
+            });
+            
+            // Force reload if image hasn't loaded after 3 seconds
+            setTimeout(() => {
+                if (!profileImage.complete || profileImage.naturalHeight === 0) {
+                    console.log('Image taking too long, forcing reload');
+                    profileImage.src = profileImage.src.split('?')[0] + '?t=' + Date.now();
+                }
+            }, 3000);
+        }
+
+        // =================================================================================
+        // Interactive Terminal v3.0 (Modal Window)
+        // =================================================================================
+        
+        let commandHistory = [];
+        let historyIndex = -1;
+        
+        // Terminal element references
+        let terminalWindow;
+        let terminalInput;
+        let terminalOutput;
+        let terminalHeader;
+
+        const commands = {
+            'help': 'Displays a list of available commands.',
+            'whoami': 'Navigates to the profile and contact section.',
+            'about': 'Alias for whoami.',
+            'contact': 'Displays contact information.',
+            'ls': 'Lists all available sections to navigate to.',
+            'cat': 'Displays the content of a section. Usage: cat <section_file_name>',
+            'cd': 'Navigates to a specific section. Usage: cd <section_directory>',
+            'clear': 'Clears the terminal screen.',
+            'exit': 'Closes the terminal.',
+            'history': 'Displays command history.'
+        };
+        
+        const execute = {
+            help: () => {
+                return `Available commands:
+
+Navigation:
+  whoami                  - Show profile information
+  ls                      - List all resume sections
+  cd <section>            - Navigate to section
+  cat <file>              - Display file contents
+
+Files you can cat:
+  cat about_me.txt        - View about section
+  cat investigations.log  - View investigations
+  cat experience.log      - View work history
+  cat publications.md     - View publications
+
+Sections you can cd to:
+  profile, achievements, investigations, publications
+  media, skills, experience, affiliations, patents, expert
+
+Utility:
+  clear                   - Clear terminal
+  history                 - Show command history
+  exit                    - Close terminal
+
+Easter eggs: sudo, hack`;
+            },
+            whoami: () => {
+                scrollToSection('hero');
+                toggleTerminal();
+                return `Lance James <lance@unit221b.com>
+Chief Innovations Officer & Founder @ Unit 221B
+Status: Available for interesting challenges
+
+Navigating to profile...`;
+            },
+            about: () => execute.whoami(),
+            contact: () => {
+                scrollToSection('hero');
+                toggleTerminal();
+                return `Contact Information:
+Email: lance@unit221b.com
+LinkedIn: https://linkedin.com/in/unit221b
+Company: https://unit221b.com
+
+Navigating to contact section...`;
+            },
+            ls: () => {
+                return `drwxr-xr-x  profile/
+drwxr-xr-x  achievements/
+drwxr-xr-x  investigations/
+drwxr-xr-x  publications/
+drwxr-xr-x  media/
+drwxr-xr-x  skills/
+drwxr-xr-x  experience/
+drwxr-xr-x  affiliations/
+drwxr-xr-x  patents/
+drwxr-xr-x  expert/`;
+            },
+            cat: (args) => {
+                if (!args || args.length === 0) {
+                    return 'cat: missing operand\nUsage: cat <filename>\nTry: cat about_me.txt';
+                }
+                
+                const sectionMap = {
+                    'about_me.txt': 'profile',
+                    'about_me': 'profile',
+                    'investigations.log': 'investigations',
+                    'experience.log': 'experience',
+                    'publications.md': 'publications',
+                    'patents': 'patents',
+                    'expert': 'expert',
+                    'achievements': 'achievements',
+                    'skills': 'skills',
+                    'media': 'media',
+                    'affiliations': 'affiliations'
+                };
+                
+                const file = args[0];
+                if (sectionMap[file]) {
+                    scrollToSection(sectionMap[file]);
+                    toggleTerminal();
+                    return `Displaying content of ${file}...`;
+                }
+                return `cat: ${file}: No such file or directory`;
+            },
+            cd: (args) => {
+                if (!args || args.length === 0) {
+                    return 'cd: missing operand\nUsage: cd <directory>\nTry: cd experience';
+                }
+                
+                const section = args[0].replace('/', '');
+                const validSections = ['profile', 'achievements', 'investigations', 'publications', 'media', 'skills', 'experience', 'affiliations', 'patents', 'expert'];
+                if (validSections.includes(section)) {
+                    scrollToSection(section);
+                    toggleTerminal();
+                    return `Navigating to ${section}...`;
+                }
+                return `cd: ${section}: No such file or directory`;
+            },
+            clear: () => {
+                terminalOutput.innerHTML = '';
+                return '';
+            },
+            exit: () => {
+                toggleTerminal();
+                return '';
+            },
+            history: () => commandHistory.length > 0 ? commandHistory.join('\n') : 'No commands in history.',
+            sudo: () => 'Nice try! But this is a read-only resume. 😄',
+            hack: () => 'Already hacked! This terminal is part of the experience. 🚀',
+            'rm': () => 'rm: cannot remove: Resume is read-only! 😅',
+            'cowsay': (args) => {
+                const message = args && args.length > 0 ? args.join(' ') : 'Hire Lance!';
+                return ` _____________
+< ${message} >
+ -------------
+        \\   ^__^
+         \\  (oo)\\_______
+            (__)\\       )\\/\\
+                ||----w |
+                ||     ||`;
+            },
+            // WarGames game emulations
+            '1': () => {
+                return `Game selection: 1 - Global Thermonuclear War
+
+Initializing launch sequence...
+Accessing NORAD missile systems...
+ERROR: Access denied.
+
+"A strange game. The only winning move is not to play."
+                                    - WOPR
+
+How about a nice game of chess instead?
+Type '2' for chess or 'help' for commands.`;
+            },
+            '2': () => {
+                return `Game selection: 2 - Chess
+
+♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟
+· · · · · · · ·
+· · · · · · · ·
+· · · · ♙ · · ·
+· · · · · · · ·
+♙ ♙ ♙ ♙ · ♙ ♙ ♙
+♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+
+WOPR plays: e2-e4
+
+Your move, Professor. 
+(This is just for show - try 'help' for real commands)`;
+            },
+            '3': () => {
+                return `Game selection: 3 - Tic-Tac-Toe
+
+X | O | X
+---------
+O | X | O  
+---------
+X | O | X
+
+Cat's game! Nobody wins.
+
+"Interesting. The only way to win is not to play."
+
+Type '4' to access resume navigation.`;
+            },
+            '4': () => {
+                return `Game selection: 4 - Resume Navigation
+
+Initializing Lance James Professional Profile System...
+Loading executive summary.................. [OK]
+Loading career history.................... [OK]  
+Loading achievements database............. [OK]
+Mounting investigation archives........... [OK]
+Indexing publication records.............. [OK]
+
+╔══════════════════════════════════════════════╗
+║  WOPR RESUME NAVIGATION SYSTEM ACTIVE        ║
+╚══════════════════════════════════════════════╝
+
+Access granted, Professor Falken.
+All systems ready for navigation.
+
+Type 'help' to see available navigation commands.`;
+            }
+        };
+        
+        function toggleTerminal() {
+            const terminalWindow = document.getElementById('terminal-window');
+            const terminalInput = document.getElementById('terminal-input');
+            const terminalOutput = document.getElementById('terminal-output');
+            
+            console.log('toggleTerminal called!', {terminalWindow, terminalInput, terminalOutput});
+            
+            if (!terminalWindow) {
+                console.error('Terminal window not found!');
+                return;
+            }
+            
+            terminalWindow.classList.toggle('active');
+            
+            if (terminalWindow.classList.contains('active')) {
+                console.log('Terminal opening...');
+                console.log('Terminal output element:', terminalOutput);
+                console.log('Terminal output innerHTML:', terminalOutput ? terminalOutput.innerHTML : 'null');
+                
+                setTimeout(() => {
+                    if (terminalInput) terminalInput.focus();
+                }, 300);
+                
+                // Always show the WOPR greeting when terminal opens
+                if (terminalOutput) {
+                    console.log('Adding WarGames WOPR greeting...');
+                    // WarGames-style greeting - exact format as specified
+                    terminalOutput.innerHTML = `
+                        <div class="terminal-line">╔═══════════════════════════════════════════╗</div>
+                        <div class="terminal-line">║    LANCE JAMES SECURITY SYSTEMS v2.5     ║</div>
+                        <div class="terminal-line">║         WOPR INTERFACE ACTIVE             ║</div>
+                        <div class="terminal-line">╚═══════════════════════════════════════════╝</div>
+                        <div class="terminal-line"></div>
+                        <div class="terminal-line">Greetings, Professor Falken.</div>
+                        <div class="terminal-line"></div>
+                        <div class="terminal-line">Shall we play a game?</div>
+                        <div class="terminal-line"></div>
+                        <div class="terminal-line">Available games:</div>
+                        <div class="terminal-line">  1. Global Thermonuclear War</div>
+                        <div class="terminal-line">  2. Chess</div>
+                        <div class="terminal-line">  3. Tic-Tac-Toe</div>
+                        <div class="terminal-line">  4. Resume Navigation</div>
+                        <div class="terminal-line"></div>
+                        <div class="terminal-line">Please select: 4</div>
+                        <div class="terminal-line"></div>
+                        <div class="terminal-line">Loading Lance James Professional Profile...</div>
+                        <div class="terminal-line"></div>
+                        <div class="terminal-line">System ready. Type 'help' to see available commands.</div>
+                    `;
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    console.log('WOPR greeting added successfully');
+                } else {
+                    console.error('Terminal output element not found when trying to add WOPR greeting!');
+                }
+            }
+        }
+
+        function printToTerminal(text) {
+            const terminalOutput = document.getElementById('terminal-output');
+            if (terminalOutput) {
+                const formattedText = text.replace(/\n/g, '<br>');
+                const line = document.createElement('div');
+                line.className = 'terminal-line';
+                line.style.color = 'var(--green-primary)';
+                line.innerHTML = formattedText;
+                terminalOutput.appendChild(line);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            } else {
+                console.error('Terminal output element not found!');
+            }
+        }
+        
+        function processCommand(commandStr) {
+            if (commandStr.trim()) {
+                commandHistory.push(commandStr);
+            }
+            historyIndex = commandHistory.length;
+            
+            printToTerminal(`<span class="prompt">$ </span><span>${commandStr}</span>`);
+
+            const [command, ...args] = commandStr.trim().split(' ');
+            let output = '';
+            if (execute[command]) {
+                output = execute[command](args);
+            } else if(command) {
+                output = `command not found: ${command}. Type 'help' for a list of commands.`;
+            }
+
+            if (output) {
+                printToTerminal(output);
+            }
+        }
+
+        // Tab completion functionality
+        function getCompletions(input) {
+            const parts = input.trim().split(' ');
+            const command = parts[0];
+            const arg = parts[1] || '';
+            
+            // Complete commands
+            if (parts.length === 1) {
+                const allCommands = Object.keys(execute);
+                return allCommands.filter(cmd => cmd.startsWith(command.toLowerCase()));
+            }
+            
+            // Complete arguments for specific commands
+            if (command === 'cat') {
+                const files = ['about_me.txt', 'investigations.log', 'experience.log', 'publications.md', 'patents', 'achievements', 'skills', 'media', 'affiliations', 'expert'];
+                return files.filter(file => file.startsWith(arg.toLowerCase()));
+            }
+            
+            if (command === 'cd') {
+                const dirs = ['profile', 'achievements', 'investigations', 'publications', 'media', 'skills', 'experience', 'affiliations', 'patents', 'expert'];
+                return dirs.filter(dir => dir.startsWith(arg.toLowerCase()));
+            }
+            
+            return [];
+        }
+
+        function handleTabCompletion(input) {
+            const completions = getCompletions(input);
+            
+            if (completions.length === 1) {
+                // Single match - auto complete
+                const parts = input.trim().split(' ');
+                if (parts.length === 1) {
+                    return completions[0] + ' ';
+                } else {
+                    parts[parts.length - 1] = completions[0];
+                    return parts.join(' ') + (parts[0] === 'cat' || parts[0] === 'cd' ? '' : ' ');
+                }
+            } else if (completions.length > 1) {
+                // Multiple matches - show options and complete common prefix
+                printToTerminal(`<span class="prompt">$ </span><span>${input}</span>`);
+                printToTerminal(`Available: ${completions.join('  ')}`);
+                
+                // Find common prefix
+                let commonPrefix = completions[0];
+                for (let i = 1; i < completions.length; i++) {
+                    let j = 0;
+                    while (j < commonPrefix.length && j < completions[i].length && 
+                           commonPrefix[j].toLowerCase() === completions[i][j].toLowerCase()) {
+                        j++;
+                    }
+                    commonPrefix = commonPrefix.substring(0, j);
+                }
+                
+                const parts = input.trim().split(' ');
+                if (parts.length === 1 && commonPrefix.length > parts[0].length) {
+                    return commonPrefix;
+                } else if (parts.length > 1 && commonPrefix.length > parts[parts.length - 1].length) {
+                    parts[parts.length - 1] = commonPrefix;
+                    return parts.join(' ');
+                }
+            }
+            
+            return input;
+        }
+
+        // Initialize terminal functionality after DOM loads
+        function initializeTerminal() {
+            terminalWindow = document.getElementById('terminal-window');
+            terminalInput = document.getElementById('terminal-input');
+            terminalOutput = document.getElementById('terminal-output');
+            terminalHeader = document.getElementById('terminal-header');
+            
+            if (!terminalWindow || !terminalInput || !terminalOutput || !terminalHeader) {
+                console.error('Terminal elements not found!');
+                return;
+            }
+            
+            console.log('Terminal initialized successfully');
+            
+            // Terminal input event listener with enhanced keyboard sounds
+            terminalInput.addEventListener('keydown', (e) => {
+                // Play typing sounds for different key types
+                if (e.key === 'Enter') {
+                    playTypingSound('enter');
+                    processCommand(terminalInput.value);
+                    terminalInput.value = '';
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    playTypingSound('normal');
+                    terminalInput.value = handleTabCompletion(terminalInput.value);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    playTypingSound('normal');
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        terminalInput.value = commandHistory[historyIndex];
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    playTypingSound('normal');
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        terminalInput.value = commandHistory[historyIndex];
+                    } else {
+                        historyIndex = commandHistory.length;
+                        terminalInput.value = '';
+                    }
+                } else if (e.key === 'Backspace') {
+                    playTypingSound('backspace');
+                } else if (e.key === ' ') {
+                    playTypingSound('space');
+                } else if (e.key.length === 1) {
+                    // Only play sound for printable characters
+                    playTypingSound('normal');
+                }
+            });
+
+            // Global keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && terminalWindow.classList.contains('active')) {
+                    toggleTerminal();
+                }
+                if (e.ctrlKey && e.key === '`') {
+                    e.preventDefault();
+                    toggleTerminal();
+                }
+            });
+
+            // Draggable terminal window logic
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            terminalHeader.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - terminalWindow.offsetLeft;
+                offsetY = e.clientY - terminalWindow.offsetTop;
+                terminalHeader.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    terminalWindow.style.left = `${e.clientX - offsetX}px`;
+                    terminalWindow.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                terminalHeader.style.cursor = 'move';
+            });
+        }
+
+        // =================================================================================
+        // Boot Sequence System
+        // =================================================================================
+
+        function startBootSequence() {
+            const bootMessages = document.getElementById('bootMessages');
+            const bootScreen = document.getElementById('bootScreen');
+            const sound = document.getElementById('bootSound');
+            
+            // Play boot sound
+            if (sound) {
+                sound.volume = 0.3;
+                sound.play().catch(e => console.log("Audio autoplay prevented"));
+            }
+            
+            const messages = [
+                'LANCE JAMES SECURITY SYSTEMS v2.5.1',
+                'Copyright (C) 2025 Unit 221B, Inc.',
+                '',
+                'Initializing secure boot sequence...',
+                'Loading kernel modules.................... [OK]',
+                'Mounting encrypted filesystems............ [OK]',
+                'Starting threat detection services........ [OK]',
+                'Initializing AI/ML frameworks............ [OK]',
+                'Loading cybersecurity protocols.......... [OK]',
+                'Verifying digital signatures............. [OK]',
+                'Starting network monitoring.............. [OK]',
+                '',
+                'System Status: SECURE',
+                'Threat Level: GREEN',
+                'All systems operational.',
+                '',
+                'Welcome, authorized user.',
+                'Launching resume interface...',
+                ''
+            ];
+            
+            let messageIndex = 0;
+            
+            function typeNextMessage() {
+                if (messageIndex < messages.length) {
+                    const line = document.createElement('div');
+                    line.className = 'boot-line';
+                    line.style.animationDelay = '0s';
+                    line.textContent = messages[messageIndex];
+                    bootMessages.appendChild(line);
+                    
+                    // Scroll to bottom
+                    bootMessages.scrollTop = bootMessages.scrollHeight;
+                    
+                    messageIndex++;
+                    setTimeout(typeNextMessage, Math.random() * 300 + 200);
+                } else {
+                    // Boot complete, fade out
+                    setTimeout(() => {
+                        bootScreen.classList.add('fade-out');
+                        setTimeout(() => {
+                            bootScreen.style.display = 'none';
+                            // Start main page animations
+                            initAnimations();
+                        }, 1000);
+                    }, 1000);
+                }
+            }
+            
+            // Start typing messages after logo appears
+            setTimeout(typeNextMessage, 1500);
+        }
+
+        // =================================================================================
+        // Hacker Effects v1.0
+        // =================================================================================
+
+        // Matrix Rain Effect
+        let matrixInterval;
+        let idleTimeout;
+        let isIdle = false;
+
+        function createMatrixRain() {
+            const matrixContainer = document.getElementById('matrixRain');
+            const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?';
+            
+            // Clear existing columns
+            matrixContainer.innerHTML = '';
+            
+            const numColumns = Math.floor(window.innerWidth / 20);
+            
+            for (let i = 0; i < numColumns; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = `${i * 20}px`;
+                column.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                column.style.animationDelay = `${Math.random() * 2}s`;
+                
+                // Generate random characters for this column
+                let columnText = '';
+                for (let j = 0; j < 20; j++) {
+                    columnText += characters[Math.floor(Math.random() * characters.length)] + '\n';
+                }
+                column.textContent = columnText;
+                
+                matrixContainer.appendChild(column);
+            }
+        }
+
+        function startMatrixRain() {
+            if (!isIdle) {
+                isIdle = true;
+                createMatrixRain();
+                document.getElementById('matrixRain').classList.add('active');
+            }
+        }
+
+        function stopMatrixRain() {
+            if (isIdle) {
+                isIdle = false;
+                document.getElementById('matrixRain').classList.remove('active');
+                clearTimeout(idleTimeout);
+            }
+        }
+
+        function resetIdleTimer() {
+            stopMatrixRain();
+            clearTimeout(idleTimeout);
+            idleTimeout = setTimeout(startMatrixRain, 30000); // 30 seconds of inactivity
+        }
+
+        // Loader Animation for Navigation
+        function showLoader(message) {
+            const overlay = document.getElementById('loaderOverlay');
+            const text = document.getElementById('loaderText');
+            const progressFill = document.getElementById('progressFill');
+            
+            text.textContent = message;
+            progressFill.style.width = '0%';
+            overlay.classList.add('active');
+            
+            // Animate progress bar
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                    }, 200);
+                }
+                progressFill.style.width = `${progress}%`;
+            }, 50);
+        }
+
+        // Enhanced scrollToSection with loader
+        const originalScrollToSection = scrollToSection;
+        scrollToSection = function(sectionId) {
+            const messages = {
+                'hero': 'Accessing profile...',
+                'profile': 'Decrypting about_me.txt...',
+                'achievements': 'Loading achievements matrix...',
+                'investigations': 'Accessing investigation logs...',
+                'publications': 'Retrieving publications...',
+                'media': 'Streaming media files...',
+                'skills': 'Analyzing skill tree...',
+                'experience': 'Parsing experience.log...',
+                'affiliations': 'Querying affiliations database...',
+                'patents': 'Searching patent registry...',
+                'expert': 'Loading expert witness records...'
+            };
+            
+            showLoader(messages[sectionId] || 'Accessing data...');
+            setTimeout(() => originalScrollToSection(sectionId), 300);
+        };
+
+        // Terminal Typing Sounds
+        function playTypingSound(keyType = 'normal') {
+            // Create audio context for typing sounds
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            const frequencies = {
+                'normal': 800,
+                'space': 400,
+                'enter': 1200,
+                'backspace': 600
+            };
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequencies[keyType], audioContext.currentTime);
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+
+        // Initialize idle timer and activity listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up idle detection
+            ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(event => {
+                document.addEventListener(event, resetIdleTimer, true);
+            });
+            
+            // Start idle timer
+            resetIdleTimer();
+        });
+
+        // Window resize handler for matrix rain
+        window.addEventListener('resize', () => {
+            if (isIdle) {
+                createMatrixRain();
+            }
+        });
+
+    </script>
+</body>
+</html>
