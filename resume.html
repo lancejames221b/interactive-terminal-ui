@@ -257,6 +257,22 @@
             overflow-y: auto;
             z-index: 1001;
             transition: transform 0.3s ease;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--green-secondary) transparent; /* Firefox */
+        }
+        
+        /* Sidebar scrollbar - WebKit */
+        .sidebar::-webkit-scrollbar {
+            width: 10px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--green-secondary), var(--green-primary));
+            border-radius: 8px;
+            border: 2px solid var(--bg-secondary);
+            box-shadow: var(--glow);
         }
         
         .sidebar.mobile-hidden {
@@ -1764,7 +1780,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            padding: 2rem;
+            padding: 6rem 2rem 2rem 2rem; /* extra top space for centered banner */
             overflow: hidden;
             opacity: 1;
             transition: opacity 1s ease-out;
@@ -1803,13 +1819,43 @@
         }
 
         .boot-logo {
+            position: absolute;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            white-space: nowrap;
             font-size: 18px;
-            color: var(--green-secondary);
+            font-weight: 600;
+            color: var(--green-primary);
             text-shadow: var(--glow);
-            margin-bottom: 2rem;
             opacity: 0;
             animation: boot-line-appear 0.5s ease-out forwards;
         }
+
+        .boot-logo::before,
+        .boot-logo::after {
+            content: '';
+            height: 2px;
+            width: 28vw;
+            display: block;
+            border-radius: 2px;
+            box-shadow: var(--glow);
+        }
+
+        .boot-logo::before {
+            background: linear-gradient(90deg, var(--green-secondary), transparent);
+        }
+
+        .boot-logo::after {
+            background: linear-gradient(90deg, transparent, var(--green-secondary));
+        }
+
+        .boot-logo .boot-title { color: var(--green-primary); }
+        .boot-logo .boot-sep { color: var(--green-primary); opacity: 0.9; }
+        .boot-logo .boot-subtitle { color: var(--text-muted); }
     </style>
 </head>
 <body class="terminal-mode">
@@ -1818,10 +1864,9 @@
     <!-- Boot Sequence Screen -->
     <div class="boot-screen" id="bootScreen">
         <div class="boot-logo" id="bootLogo">
-            ╔══════════════════════════════════════╗
-            ║    LANCE JAMES SECURITY SYSTEMS     ║
-            ║         Terminal Interface          ║
-            ╚══════════════════════════════════════╝
+            <span class="boot-title">LANCE JAMES SECURITY SYSTEMS</span>
+            <span class="boot-sep">||</span>
+            <span class="boot-subtitle">Terminal Interface</span>
         </div>
         <div id="bootMessages"></div>
         <div class="boot-cursor" id="bootCursor"></div>
@@ -1893,6 +1938,10 @@
                 <li onclick="scrollToSection('expert')" onkeydown="handleNavKeydown(event, 'expert')" tabindex="0" role="menuitem" aria-label="Navigate to expert witness experience" data-section="expert">
                     <div class="command">history expert</div>
                     <div class="description">Expert Witness</div>
+                </li>
+                <li onclick="scrollToSection('open-source')" onkeydown="handleNavKeydown(event, 'open-source')" tabindex="0" role="menuitem" aria-label="Navigate to open source security contributions" data-section="open-source">
+                    <div class="command">cat open_source.md</div>
+                    <div class="description">Open Source Security</div>
                 </li>
             </ul>
             
@@ -2335,6 +2384,22 @@
                             <div class="affiliation-item">House of Representatives – H.R. 5126</div>
                         </div>
                     </div>
+                </div>
+            </section>
+            
+            <!-- Open Source Security Contributions -->
+            <section class="section" id="open-source">
+                <h3 class="section-header pulse-effect" data-text="$ cat open_source.md">cat open_source.md</h3>
+                <div class="terminal-output">
+                    <ul class="achievements">
+                        <li>
+                            <strong>Hardened BitChat (Bluetooth mesh app)</strong> with Noise protocol secure sessions, device‑reputation anti‑spam, structured secure logging, and storage fixes; mitigated BLE flooding, handshake abuse, and key handling risks. Contributions merged to main; coordinated with maintainers and community via PR.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/bitchat/commit/70d8c78a76cd5fd795a818621a8d576a71419eab" target="_blank" rel="noopener noreferrer" class="badge">Commit</a>
+                                <a href="https://github.com/lancejames221b/bitchat" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </section>
         </main>
