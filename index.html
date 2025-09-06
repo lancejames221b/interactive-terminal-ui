@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Lance James">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0b0f10">
+    <meta name="msapplication-navbutton-color" content="#0b0f10">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Lance James - Chief Innovations Officer & Cybersecurity Expert | Unit 221B</title>
     <meta name="description" content="Lance James, Chief Innovations Officer at Unit 221B. 20+ years in cybersecurity, AI, and threat intelligence. Led $5M Series Seed (2025). Creator of Agent Hivemind & SpinScore.">
     <meta property="og:title" content="Lance James - Chief Innovations Officer & Cybersecurity Expert">
@@ -12,6 +19,10 @@
     <meta property="og:type" content="profile">
     <link rel="canonical" href="https://lancejames.dev">
     <link rel="icon" href="https://i.ibb.co/Pz5s2hMP/image.png">
+    <link rel="apple-touch-icon" href="https://i.ibb.co/Pz5s2hMP/image.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/Pz5s2hMP/image.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://i.ibb.co/Pz5s2hMP/image.png">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTGFuY2UgSmFtZXMgLSBDaGllZiBJbm5vdmF0aW9ucyBPZmZpY2VyIiwic2hvcnRfbmFtZSI6IkxhbmNlIEphbWVzIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwYjBmMTAiLCJ0aGVtZV9jb2xvciI6IiMwMGZmOWMiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9pLmliYi5jby9QejVzMmhNUC9pbWFnZS5wbmciLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIn0seyJzcmMiOiJodHRwczovL2kuaWJiLmNvL1B6NXMyaE1QL2ltYWdlLnBuZyIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9wbmcifV19">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -238,13 +249,30 @@
         .sidebar {
             width: 320px;
             background: var(--bg-secondary);
-            border-right: 2px solid var(--border);
+            border-right: 2px solid transparent;
+            border-image: linear-gradient(to bottom, var(--green-secondary), var(--green-primary)) 1;
             padding: 1.5rem;
             position: fixed;
             height: 100vh;
             overflow-y: auto;
             z-index: 1001;
             transition: transform 0.3s ease;
+            scrollbar-width: thin; /* Firefox */
+            scrollbar-color: var(--green-secondary) transparent; /* Firefox */
+        }
+        
+        /* Sidebar scrollbar - WebKit */
+        .sidebar::-webkit-scrollbar {
+            width: 10px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--green-secondary), var(--green-primary));
+            border-radius: 8px;
+            border: 2px solid var(--bg-secondary);
+            box-shadow: var(--glow);
         }
         
         .sidebar.mobile-hidden {
@@ -817,29 +845,19 @@
             animation: fadeInUp 0.6s ease forwards;
         }
         
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .sidebar {
-                width: 280px;
-            }
-            
-            .main-content {
-                margin-left: 280px;
-            }
-            
-            .section {
-                padding: 3rem 2rem;
-            }
-        }
+        /* Enhanced Mobile Responsive Design */
         
-        @media (max-width: 768px) {
+        /* Mobile menu button - visible on tablets and phones */
+        @media (max-width: 1024px) {
             .mobile-menu-btn {
                 display: block;
+                z-index: 1002;
             }
             
             .sidebar {
-                width: 300px;
+                width: 280px;
                 transform: translateX(-100%);
+                transition: transform 0.3s ease;
             }
             
             .sidebar.mobile-visible {
@@ -849,82 +867,488 @@
             .main-content {
                 margin-left: 0;
                 width: 100%;
+                padding: 1rem;
+            }
+            
+            .section {
+                padding: 3rem 1.5rem;
+            }
+            
+            /* Terminal adjustments for tablets */
+            .terminal-window {
+                width: 95%;
+                max-width: 600px;
+                height: 60vh;
+                max-height: 500px;
+                top: 50%;
+                left: 50%;
+            }
+            
+            .btn-terminal-toggle {
+                bottom: 1.5rem;
+                right: 1.5rem;
+            }
+        }
+        
+        /* Tablet and Phone adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                font-size: 13px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-width: 350px;
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.mobile-visible {
+                transform: translateX(0);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 0.5rem;
             }
             
             .hero {
-                padding: 5rem 1.5rem 3rem;
-                min-height: 90vh;
+                padding: 4rem 1rem 3rem;
+                min-height: 85vh;
             }
             
             .hero-contact {
                 flex-direction: column;
                 align-items: center;
                 width: 100%;
-                max-width: 350px;
+                max-width: 320px;
+                gap: 1rem;
             }
             
             .contact-item {
                 width: 100%;
                 justify-content: center;
+                padding: 0.8rem 1.2rem;
+                font-size: 0.9rem;
             }
             
             .job-header {
                 flex-direction: column;
+                gap: 0.5rem;
             }
             
             .section {
-                padding: 2.5rem 1.5rem;
+                padding: 2rem 1rem;
             }
             
             .profile-ring {
-                width: 180px;
-                height: 180px;
+                width: 160px;
+                height: 160px;
             }
             
             .profile-image {
-                width: 160px;
-                height: 160px;
+                width: 140px;
+                height: 140px;
             }
             
             .hero-badges {
                 flex-direction: column;
                 align-items: center;
                 max-width: 300px;
+                gap: 0.8rem;
             }
             
             .badge {
                 width: 100%;
                 text-align: center;
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
             }
-        }
-        
-        @media (max-width: 480px) {
-            .section {
-                padding: 2rem 1rem;
+            
+            /* Enhanced Terminal Mobile Support */
+            .terminal-window {
+                width: 98%;
+                height: 75vh;
+                max-height: none;
+                top: 50%;
+                left: 50%;
+                border-radius: 8px;
+            }
+            
+            .terminal-header {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .terminal-title {
+                font-size: 0.8rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .terminal-body {
+                padding: 0.8rem;
             }
             
             .terminal-output {
-                padding: 1.5rem;
+                font-size: 0.85rem;
+                padding-right: 5px;
             }
             
-            .hero {
-                padding: 4rem 1rem 2rem;
+            .terminal-line {
+                line-height: 1.3;
+                margin-bottom: 0.3rem;
+            }
+            
+            .terminal-input-wrapper {
+                padding-top: 0.4rem;
+                margin-top: 0.4rem;
+            }
+            
+            .terminal-input {
+                font-size: 0.9rem;
+            }
+            
+            .btn-terminal-toggle {
+                width: 45px;
+                height: 45px;
+                bottom: 1rem;
+                right: 1rem;
+                font-size: 1.1rem;
+            }
+            
+            /* Skills grid mobile optimization */
+            .skills-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 1rem;
+            }
+            
+            .skill-item {
+                padding: 1rem;
+                font-size: 0.85rem;
+            }
+            
+            /* Affiliations mobile optimization */
+            .affiliations-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            /* Section headers mobile optimization */
+            .section-header {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            /* Terminal output sections mobile optimization */
+            .terminal-output {
+                padding: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .terminal-output > *:first-child {
+                margin-top: 20px;
+            }
+            
+            /* Job items mobile optimization */
+            .job-title {
+                font-size: 1.2rem;
+            }
+            
+            .company, .job-date {
+                font-size: 0.9rem;
+            }
+            
+            .job-description {
+                font-size: 0.9rem;
+                line-height: 1.6;
+            }
+            
+            .achievements li {
+                font-size: 0.85rem;
+                line-height: 1.6;
+                padding-left: 1.5rem;
             }
         }
         
-        @media (max-width: 320px) {
+        /* Phone-specific optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+                font-size: 12px;
+            }
+            
+            .hero {
+                padding: 3rem 0.5rem 2rem;
+                min-height: 80vh;
+            }
+            
+            .section {
+                padding: 1.5rem 0.8rem;
+            }
+            
+            .terminal-output {
+                padding: 1rem;
+            }
+            
             .profile-ring {
-                width: 150px;
-                height: 150px;
+                width: 140px;
+                height: 140px;
             }
             
             .profile-image {
-                width: 130px;
-                height: 130px;
+                width: 120px;
+                height: 120px;
             }
             
+            .hero-name {
+                font-size: 2rem;
+                margin-bottom: 0.8rem;
+            }
+            
+            .hero-title {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+                line-height: 1.6;
+                padding: 0 0.5rem;
+            }
+            
+            .hero-badges {
+                max-width: 280px;
+                gap: 0.6rem;
+            }
+            
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.8rem;
+            }
+            
+            .contact-item {
+                padding: 0.7rem 1rem;
+                font-size: 0.85rem;
+                min-height: 45px;
+            }
+            
+            .copy-btn {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+            }
+            
+            /* Terminal mobile phone optimization */
+            .terminal-window {
+                width: 99%;
+                height: 80vh;
+                border-radius: 6px;
+                margin: 0;
+            }
+            
+            .terminal-header {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+            }
+            
+            .terminal-title {
+                font-size: 0.7rem;
+            }
+            
+            .terminal-close {
+                font-size: 1.3rem;
+            }
+            
+            .terminal-body {
+                padding: 0.6rem;
+            }
+            
+            .terminal-output {
+                font-size: 0.8rem;
+            }
+            
+            .terminal-line {
+                line-height: 1.2;
+                margin-bottom: 0.2rem;
+            }
+            
+            .terminal-input-wrapper {
+                padding-top: 0.3rem;
+                margin-top: 0.3rem;
+            }
+            
+            .terminal-input {
+                font-size: 0.85rem;
+            }
+            
+            .prompt {
+                font-size: 0.85rem;
+            }
+            
+            .btn-terminal-toggle {
+                width: 40px;
+                height: 40px;
+                bottom: 0.8rem;
+                right: 0.8rem;
+                font-size: 1rem;
+            }
+            
+            .section-header {
+                font-size: 1.5rem;
+                margin-bottom: 1.2rem;
+            }
+            
+            .job-title {
+                font-size: 1.1rem;
+            }
+            
+            .company, .job-date {
+                font-size: 0.85rem;
+            }
+            
+            .job-description {
+                font-size: 0.85rem;
+            }
+            
+            .achievements li {
+                font-size: 0.8rem;
+                padding-left: 1.2rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+                gap: 0.8rem;
+            }
+            
+            .skill-item {
+                padding: 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .affiliation-item {
+                font-size: 0.85rem;
+                padding: 0.8rem 0;
+            }
+        }
+        
+        /* Very small phones */
+        @media (max-width: 360px) {
+            .hero-name {
+                font-size: 1.8rem;
+            }
+            
+            .hero-title {
+                font-size: 1.1rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.85rem;
+            }
+            
+            .profile-ring {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .terminal-window {
+                height: 85vh;
+            }
+            
+            .terminal-title {
+                font-size: 0.65rem;
+            }
+            
+            .terminal-output, .terminal-input {
+                font-size: 0.75rem;
+            }
+            
+            .btn-terminal-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 320px) {
             .sidebar {
                 width: 100%;
+            }
+            
+            .hero {
+                padding: 2.5rem 0.3rem 1.5rem;
+            }
+            
+            .section {
+                padding: 1.2rem 0.5rem;
+            }
+            
+            .terminal-window {
+                width: 100%;
+                height: 90vh;
+                border-radius: 0;
+                top: 50%;
+                left: 50%;
+            }
+            
+            .hero-badges {
+                max-width: 250px;
+            }
+        }
+        
+        /* Landscape phone optimization */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .terminal-window {
+                height: 95vh;
+                width: 95%;
+            }
+            
+            .hero {
+                min-height: 70vh;
+                padding: 2rem 1rem;
+            }
+            
+            .section {
+                padding: 1.5rem 1rem;
+            }
+        }
+        
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .nav-commands li, 
+            .contact-item, 
+            .badge,
+            .btn-terminal-toggle,
+            .back-to-top {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .callout-item {
+                min-height: 40px;
+                padding: 0.6rem 0.8rem;
+            }
+            
+            .copy-btn {
+                min-height: 36px;
+                min-width: 60px;
+            }
+            
+            .terminal-close {
+                min-height: 40px;
+                min-width: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
         
@@ -1356,7 +1780,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: flex-start;
-            padding: 2rem;
+            padding: 6rem 2rem 2rem 2rem; /* extra top space for centered banner */
             overflow: hidden;
             opacity: 1;
             transition: opacity 1s ease-out;
@@ -1395,13 +1819,43 @@
         }
 
         .boot-logo {
+            position: absolute;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            white-space: nowrap;
             font-size: 18px;
-            color: var(--green-secondary);
+            font-weight: 600;
+            color: var(--green-primary);
             text-shadow: var(--glow);
-            margin-bottom: 2rem;
             opacity: 0;
             animation: boot-line-appear 0.5s ease-out forwards;
         }
+
+        .boot-logo::before,
+        .boot-logo::after {
+            content: '';
+            height: 2px;
+            width: 28vw;
+            display: block;
+            border-radius: 2px;
+            box-shadow: var(--glow);
+        }
+
+        .boot-logo::before {
+            background: linear-gradient(90deg, var(--green-secondary), transparent);
+        }
+
+        .boot-logo::after {
+            background: linear-gradient(90deg, transparent, var(--green-secondary));
+        }
+
+        .boot-logo .boot-title { color: var(--green-primary); }
+        .boot-logo .boot-sep { color: var(--green-primary); opacity: 0.9; }
+        .boot-logo .boot-subtitle { color: var(--text-muted); }
     </style>
 </head>
 <body class="terminal-mode">
@@ -1410,10 +1864,9 @@
     <!-- Boot Sequence Screen -->
     <div class="boot-screen" id="bootScreen">
         <div class="boot-logo" id="bootLogo">
-            ╔══════════════════════════════════════╗
-            ║    LANCE JAMES SECURITY SYSTEMS     ║
-            ║         Terminal Interface          ║
-            ╚══════════════════════════════════════╝
+            <span class="boot-title">LANCE JAMES SECURITY SYSTEMS</span>
+            <span class="boot-sep">||</span>
+            <span class="boot-subtitle">Terminal Interface</span>
         </div>
         <div id="bootMessages"></div>
         <div class="boot-cursor" id="bootCursor"></div>
@@ -1430,9 +1883,14 @@
         </div>
     </div>
 
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu">
+        ☰ Menu
+    </button>
+
     <div class="container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="terminal-header">
                 $ lance-james --navigation
             </div>
@@ -1480,6 +1938,10 @@
                 <li onclick="scrollToSection('expert')" onkeydown="handleNavKeydown(event, 'expert')" tabindex="0" role="menuitem" aria-label="Navigate to expert witness experience" data-section="expert">
                     <div class="command">history expert</div>
                     <div class="description">Expert Witness</div>
+                </li>
+                <li onclick="scrollToSection('open-source')" onkeydown="handleNavKeydown(event, 'open-source')" tabindex="0" role="menuitem" aria-label="Navigate to open source security contributions" data-section="open-source">
+                    <div class="command">cat open_source.md</div>
+                    <div class="description">Open Source Security</div>
                 </li>
             </ul>
             
@@ -1922,6 +2384,61 @@
                             <div class="affiliation-item">House of Representatives – H.R. 5126</div>
                         </div>
                     </div>
+                </div>
+            </section>
+            
+            <!-- Open Source Security Contributions -->
+            <section class="section" id="open-source">
+                <h3 class="section-header pulse-effect" data-text="$ cat open_source.md">cat open_source.md</h3>
+                <div class="terminal-output">
+                    <ul class="achievements">
+                        <li>
+                            <strong>Hardened BitChat (Bluetooth mesh app)</strong> with Noise protocol secure sessions, device‑reputation anti‑spam, structured secure logging, and storage fixes; mitigated BLE flooding, handshake abuse, and key handling risks. Contributions merged to main; coordinated with maintainers and community via PR.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/bitchat/commit/70d8c78a76cd5fd795a818621a8d576a71419eab" target="_blank" rel="noopener noreferrer" class="badge">Commit</a>
+                                <a href="https://github.com/lancejames221b/bitchat" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                        <li style="margin-top: 1.25rem;">
+                            <strong>Agent Hivemind</strong> — Open-source collective memory MCP server enabling distributed AI/agents to share context and coordinate automation across DevOps and incident response workflows.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/agent-hivemind" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                                <a href="https://lancejames221b.github.io/interactive-terminal-ui/" target="_blank" rel="noopener noreferrer" class="badge">Demo</a>
+                            </div>
+                        </li>
+                        <li style="margin-top: 1.25rem;">
+                            <strong>PrivateAI (Python, MIT)</strong> — Privacy‑preserving middleware for AI: redaction, sensitive‑data controls, and policy‑driven filtering across model calls.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/PrivateAI" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                        <li style="margin-top: 1.25rem;">
+                            <strong>SecretService (Python)</strong> — Covert comms toolkit: email encryption and image steganography pipelines for secure, deniable messaging.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/SecretService" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                        <li style="margin-top: 1.25rem;">
+                            <strong>CopyCatAI (Python)</strong> — Public successor to CopyCat: human‑in‑the‑loop desktop assistant core with step approval, tool routing (file/shell/web), and local context handling.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/CopyCatAI" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                        
+                        <!-- Optional add-ons -->
+                        <li style="margin-top: 1.25rem;">
+                            <strong>AutoMate (C++)</strong> — AI‑powered native Chromium browser with Claude/GPT integration for autonomous, verifiable browsing and smart routing.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/AutoMate" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                        <li style="margin-top: 1.25rem;">
+                            <strong>shamirstego (Python)</strong> — Shamir Secret Sharing + LSB image steganography to split and hide secrets.
+                            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-dim);">
+                                <a href="https://github.com/lancejames221b/shamirstego" target="_blank" rel="noopener noreferrer" class="badge">Repo</a>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </section>
         </main>
@@ -3168,6 +3685,432 @@ Type 'help' to see available navigation commands.`;
             if (isIdle) {
                 createMatrixRain();
             }
+        });
+
+        // =================================================================================
+        // Advanced Mobile Touch Gesture Support
+        // =================================================================================
+        
+        // Touch gesture handling for mobile navigation
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let isSwipeGesture = false;
+        let lastTouchTime = 0;
+        let touchStartTime = 0;
+
+        // Minimum swipe distance and maximum time for gesture recognition
+        const MIN_SWIPE_DISTANCE = 50;
+        const MAX_SWIPE_TIME = 300;
+        const DOUBLE_TAP_TIME = 300;
+
+        // Section navigation order
+        const sectionOrder = ['hero', 'profile', 'achievements', 'investigations', 'publications', 'media', 'skills', 'experience', 'affiliations', 'patents', 'expert'];
+
+        function handleTouchStart(e) {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            touchStartTime = Date.now();
+            isSwipeGesture = false;
+            
+            // Add touch feedback
+            if (e.target.classList.contains('badge') || e.target.classList.contains('contact-item') || e.target.classList.contains('nav-commands li')) {
+                e.target.style.transform = 'scale(0.95)';
+                e.target.style.transition = 'transform 0.1s ease';
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (!touchStartX || !touchStartY) return;
+            
+            const touch = e.touches[0];
+            const deltaX = Math.abs(touch.clientX - touchStartX);
+            const deltaY = Math.abs(touch.clientY - touchStartY);
+            
+            // Determine if this is a swipe gesture
+            if (deltaX > 10 || deltaY > 10) {
+                isSwipeGesture = true;
+            }
+            
+            // Prevent default scrolling for horizontal swipes in main content
+            if (deltaX > deltaY && deltaX > 30) {
+                e.preventDefault();
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!touchStartX || !touchStartY) return;
+            
+            const touch = e.changedTouches[0];
+            touchEndX = touch.clientX;
+            touchEndY = touch.clientY;
+            const touchEndTime = Date.now();
+            const touchDuration = touchEndTime - touchStartTime;
+            
+            // Remove touch feedback
+            if (e.target.style.transform) {
+                e.target.style.transform = '';
+            }
+            
+            // Handle double tap to open terminal
+            const timeSinceLastTap = touchEndTime - lastTouchTime;
+            if (timeSinceLastTap < DOUBLE_TAP_TIME && !isSwipeGesture) {
+                handleDoubleTap(e);
+            }
+            lastTouchTime = touchEndTime;
+            
+            // Only process swipe gestures
+            if (!isSwipeGesture || touchDuration > MAX_SWIPE_TIME) {
+                resetTouchVariables();
+                return;
+            }
+            
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const absDeltaX = Math.abs(deltaX);
+            const absDeltaY = Math.abs(deltaY);
+            
+            // Horizontal swipes for section navigation
+            if (absDeltaX > absDeltaY && absDeltaX > MIN_SWIPE_DISTANCE) {
+                const currentIndex = sectionOrder.indexOf(currentSection);
+                if (deltaX > 0 && currentIndex > 0) {
+                    // Swipe right - go to previous section
+                    scrollToSection(sectionOrder[currentIndex - 1]);
+                    showToast(`← ${sectionOrder[currentIndex - 1].charAt(0).toUpperCase() + sectionOrder[currentIndex - 1].slice(1)}`);
+                } else if (deltaX < 0 && currentIndex < sectionOrder.length - 1) {
+                    // Swipe left - go to next section  
+                    scrollToSection(sectionOrder[currentIndex + 1]);
+                    showToast(`${sectionOrder[currentIndex + 1].charAt(0).toUpperCase() + sectionOrder[currentIndex + 1].slice(1)} →`);
+                }
+            }
+            
+            // Vertical swipes for sidebar toggle
+            else if (absDeltaY > absDeltaX && absDeltaY > MIN_SWIPE_DISTANCE) {
+                if (deltaY < 0 && touchStartY < 100) {
+                    // Swipe down from top - show mobile menu
+                    if (window.innerWidth <= 768) {
+                        toggleMobileMenu();
+                    }
+                }
+            }
+            
+            resetTouchVariables();
+        }
+
+        function handleDoubleTap(e) {
+            // Double tap anywhere to toggle terminal
+            if (!e.target.closest('.sidebar') && !e.target.closest('.terminal-window')) {
+                toggleTerminal();
+                showToast('Terminal toggled');
+            }
+        }
+
+        function resetTouchVariables() {
+            touchStartX = 0;
+            touchStartY = 0;
+            touchEndX = 0; 
+            touchEndY = 0;
+            isSwipeGesture = false;
+            touchStartTime = 0;
+        }
+
+        // Pull to refresh functionality
+        let pullStartY = 0;
+        let pullCurrentY = 0;
+        let isPulling = false;
+        const PULL_THRESHOLD = 80;
+
+        function handlePullStart(e) {
+            if (document.getElementById('main-content').scrollTop === 0) {
+                pullStartY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        }
+
+        function handlePullMove(e) {
+            if (!isPulling) return;
+            
+            pullCurrentY = e.touches[0].clientY;
+            const pullDistance = pullCurrentY - pullStartY;
+            
+            if (pullDistance > 0 && pullDistance < PULL_THRESHOLD * 2) {
+                e.preventDefault();
+                const pullIndicator = document.getElementById('pull-indicator');
+                if (!pullIndicator) {
+                    createPullIndicator();
+                }
+                updatePullIndicator(pullDistance);
+            }
+        }
+
+        function handlePullEnd(e) {
+            if (!isPulling) return;
+            
+            const pullDistance = pullCurrentY - pullStartY;
+            const pullIndicator = document.getElementById('pull-indicator');
+            
+            if (pullDistance > PULL_THRESHOLD) {
+                // Trigger refresh
+                if (pullIndicator) {
+                    pullIndicator.textContent = '🔄 Refreshing...';
+                }
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            } else {
+                // Hide pull indicator
+                if (pullIndicator) {
+                    pullIndicator.remove();
+                }
+            }
+            
+            isPulling = false;
+            pullStartY = 0;
+            pullCurrentY = 0;
+        }
+
+        function createPullIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'pull-indicator';
+            indicator.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--bg-secondary);
+                color: var(--green-primary);
+                padding: 0.5rem 1rem;
+                border-radius: 0 0 10px 10px;
+                font-size: 0.9rem;
+                z-index: 10000;
+                border: 2px solid var(--green-secondary);
+                box-shadow: var(--glow);
+                transition: all 0.2s ease;
+            `;
+            indicator.textContent = '↓ Pull to refresh';
+            document.body.appendChild(indicator);
+        }
+
+        function updatePullIndicator(distance) {
+            const indicator = document.getElementById('pull-indicator');
+            if (!indicator) return;
+            
+            const progress = Math.min(distance / PULL_THRESHOLD, 1);
+            indicator.style.top = `${distance * 0.3}px`;
+            
+            if (progress >= 1) {
+                indicator.textContent = '↑ Release to refresh';
+                indicator.style.background = 'var(--green-dim)';
+            } else {
+                indicator.textContent = '↓ Pull to refresh';
+                indicator.style.background = 'var(--bg-secondary)';
+            }
+        }
+
+        // Enhanced keyboard handling for mobile
+        function handleMobileKeyboard() {
+            // Detect virtual keyboard
+            let initialViewportHeight = window.innerHeight;
+            
+            window.addEventListener('resize', () => {
+                const currentHeight = window.innerHeight;
+                const heightDifference = initialViewportHeight - currentHeight;
+                
+                if (heightDifference > 150) {
+                    // Virtual keyboard is open
+                    document.body.classList.add('keyboard-open');
+                    
+                    // Adjust terminal position if open
+                    const terminal = document.getElementById('terminal-window');
+                    if (terminal && terminal.classList.contains('active')) {
+                        terminal.style.height = '50vh';
+                        terminal.style.bottom = '10px';
+                    }
+                } else {
+                    // Virtual keyboard is closed
+                    document.body.classList.remove('keyboard-open');
+                    
+                    // Reset terminal position
+                    const terminal = document.getElementById('terminal-window');
+                    if (terminal) {
+                        terminal.style.height = '';
+                        terminal.style.bottom = '';
+                    }
+                }
+            });
+            
+            // Prevent zoom on input focus
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('focus', () => {
+                    if (window.innerWidth <= 768) {
+                        const viewport = document.querySelector('meta[name=viewport]');
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                    }
+                });
+                
+                input.addEventListener('blur', () => {
+                    if (window.innerWidth <= 768) {
+                        const viewport = document.querySelector('meta[name=viewport]');
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover');
+                    }
+                });
+            });
+        }
+
+        // Haptic feedback for supported devices
+        function triggerHapticFeedback(type = 'light') {
+            if ('vibrate' in navigator) {
+                switch(type) {
+                    case 'light':
+                        navigator.vibrate(10);
+                        break;
+                    case 'medium':
+                        navigator.vibrate(20);
+                        break;
+                    case 'heavy':
+                        navigator.vibrate([30, 10, 30]);
+                        break;
+                }
+            }
+        }
+
+        // Enhanced touch feedback for interactive elements
+        function addTouchFeedback() {
+            const interactiveElements = document.querySelectorAll('.badge, .contact-item, .nav-commands li, .btn-terminal-toggle, .copy-btn');
+            
+            interactiveElements.forEach(element => {
+                element.addEventListener('touchstart', (e) => {
+                    e.target.style.transform = 'scale(0.95)';
+                    e.target.style.transition = 'transform 0.1s ease';
+                    triggerHapticFeedback('light');
+                }, { passive: true });
+                
+                element.addEventListener('touchend', (e) => {
+                    setTimeout(() => {
+                        e.target.style.transform = '';
+                    }, 100);
+                }, { passive: true });
+                
+                element.addEventListener('touchcancel', (e) => {
+                    e.target.style.transform = '';
+                }, { passive: true });
+            });
+        }
+
+        // Device orientation handling
+        function handleOrientationChange() {
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    // Recalculate dimensions after orientation change
+                    const sidebar = document.getElementById('sidebar');
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.remove('mobile-hidden', 'mobile-visible');
+                    } else {
+                        sidebar.classList.add('mobile-hidden');
+                    }
+                    
+                    // Recreate matrix rain for new dimensions
+                    if (isIdle) {
+                        createMatrixRain();
+                    }
+                }, 500);
+            });
+        }
+
+        // Optimize scrolling performance
+        let ticking = false;
+        
+        function optimizeScrolling() {
+            const mainContent = document.getElementById('main-content');
+            
+            mainContent.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        updateBackToTopButton();
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        }
+
+        // Service Worker registration for PWA features
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            }
+        }
+
+        // Initialize all mobile enhancements
+        function initializeMobileEnhancements() {
+            // Only add touch events on touch-capable devices
+            if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                document.addEventListener('touchstart', handleTouchStart, { passive: false });
+                document.addEventListener('touchmove', handleTouchMove, { passive: false });
+                document.addEventListener('touchend', handleTouchEnd, { passive: false });
+                
+                // Pull to refresh only on main content
+                const mainContent = document.getElementById('main-content');
+                mainContent.addEventListener('touchstart', handlePullStart, { passive: false });
+                mainContent.addEventListener('touchmove', handlePullMove, { passive: false });
+                mainContent.addEventListener('touchend', handlePullEnd, { passive: false });
+                
+                addTouchFeedback();
+            }
+            
+            handleMobileKeyboard();
+            handleOrientationChange();
+            optimizeScrolling();
+            
+            // Add CSS for mobile enhancements
+            const mobileStyles = document.createElement('style');
+            mobileStyles.textContent = `
+                .keyboard-open {
+                    height: 100vh;
+                    overflow: hidden;
+                }
+                
+                .keyboard-open .main-content {
+                    height: calc(100vh - 50px);
+                    overflow-y: auto;
+                }
+                
+                /* Improve touch targets on small screens */
+                @media (max-width: 480px) {
+                    .nav-commands li,
+                    .badge,
+                    .contact-item,
+                    .btn-terminal-toggle {
+                        min-height: 48px;
+                        min-width: 48px;
+                    }
+                }
+                
+                /* Add visual feedback for touch devices */
+                @media (hover: none) and (pointer: coarse) {
+                    .badge:active,
+                    .contact-item:active,
+                    .nav-commands li:active {
+                        transform: scale(0.95) !important;
+                        transition: transform 0.1s ease !important;
+                    }
+                }
+            `;
+            document.head.appendChild(mobileStyles);
+        }
+
+        // Initialize mobile enhancements after DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeMobileEnhancements();
+            // registerServiceWorker(); // Uncomment if you create a service worker file
         });
 
     </script>
