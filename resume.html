@@ -249,7 +249,8 @@
         .sidebar {
             width: 320px;
             background: var(--bg-secondary);
-            border-right: 2px solid var(--border);
+            border-right: 2px solid transparent;
+            border-image: linear-gradient(to bottom, var(--green-secondary), var(--green-primary)) 1;
             padding: 1.5rem;
             position: fixed;
             height: 100vh;
