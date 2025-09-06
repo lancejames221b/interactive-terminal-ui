@@ -92,10 +92,7 @@ open http://localhost:8000
 
 ## 📧 **Contact**
 
-- **Email:** lance@unit221b.com
-- **LinkedIn:** [linkedin.com/in/securelance](https://linkedin.com/in/securelance)
-- **GitHub:** [github.com/lancejames221b](https://github.com/lancejames221b)
-- **Website:** [lancejames.dev](https://lancejames.dev)
+Contact information available via the interactive terminal interface.
 
 ---
 
